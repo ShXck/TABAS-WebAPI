@@ -1,0 +1,39 @@
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using TABAS_API.DataObjects;
+
+namespace TABAS_API.Objects
+{
+    public class JSONHandler
+    {
+        /// <summary>
+        /// Construye un json con el mensaje de resultado de acción.
+        /// </summary>
+        /// <param name="result">Entero que representa el resultado. (0 error, 1 no hay error)</param>
+        /// <param name="message">El mensaje del resultado.</param>
+        /// <returns>El json con la información.</returns>
+        public static string BuildMsg(int result, string message)
+        {
+            JObject json = new JObject();
+            json["msg"] = message;
+            json["http_result"] = result;
+            return json.ToString();
+        }
+
+        /// <summary>
+        /// Convierte un JArray a una lista de C#.
+        /// </summary>
+        /// <param name="jarray">El arreglo.</param>
+        /// <returns>La lista de valores del arreglo.</returns>
+        public static List<string> JArrayToList(string jarray)
+        {
+            JObject json = JObject.Parse(jarray);
+            //JArray arr = JArray.Parse(jarray);
+            return json["roles"].ToObject<List<string>>();
+        }
+    }
+}
