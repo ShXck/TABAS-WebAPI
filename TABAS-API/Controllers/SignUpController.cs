@@ -24,6 +24,12 @@ namespace TABAS_API.Controllers
             return Ok(AdminSQLHandler.AdminSignUp(JsonConvert.DeserializeObject<Admin>(data)));
         }
 
+        /// <summary>
+        /// Asigna los roles a un usuario.
+        /// </summary>
+        /// <param name="roles">La lista de roles.</param>
+        /// <param name="user">El nombre de usuario.</param>
+        /// <returns>El resultado de la acción.</returns>
         [HttpPost, Route("tabas/signup/{user}/roles")]
         public IHttpActionResult AssignRoles([FromBody] string roles, [FromUri] string user) 
         {
@@ -31,6 +37,5 @@ namespace TABAS_API.Controllers
             List<string> roles_lst = JSONHandler.JArrayToList(roles);
             return Ok(AdminSQLHandler.AssignUserRoles(user, roles_lst));
         }
-
     }
 }

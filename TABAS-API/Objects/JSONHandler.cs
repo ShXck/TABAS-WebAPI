@@ -35,5 +35,25 @@ namespace TABAS_API.Objects
             //JArray arr = JArray.Parse(jarray);
             return json["roles"].ToObject<List<string>>();
         }
+
+        /// <summary>
+        /// Crea un JSON array con resultado de una búsqueda.
+        /// </summary>
+        /// <param name="attribute">El nombre del atributo.</param>
+        /// <param name="results">La lista de resultados.</param>
+        /// <returns>El JSON con la información.</returns>
+        public static string BuildListStrResult(string attribute, List<string> results)
+        {
+            JArray array = new JArray();
+            for (int i = 0; i < results.Count; i++)
+            {
+                array.Add(results.ElementAt(i));
+            }
+            JObject result = new JObject();
+            result["http_result"] = 1;
+            result[attribute] = array;
+
+            return result.ToString();
+        }
     }
 }

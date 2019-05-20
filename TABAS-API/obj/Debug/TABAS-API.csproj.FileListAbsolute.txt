@@ -1,3 +1,5 @@
+C:\Users\DELL\Desktop\TABAS-API\TABAS-API\obj\Debug\TABAS-API.csprojAssemblyReference.cache
+C:\Users\DELL\Desktop\TABAS-API\TABAS-API\obj\Debug\TABAS-API.csproj.CoreCompileInputs.cache
 C:\Users\DELL\Desktop\TABAS-API\TABAS-API\bin\TABAS-API.dll.config
 C:\Users\DELL\Desktop\TABAS-API\TABAS-API\bin\TABAS-API.dll
 C:\Users\DELL\Desktop\TABAS-API\TABAS-API\bin\TABAS-API.pdb
@@ -199,8 +201,6 @@ C:\Users\DELL\Desktop\TABAS-API\TABAS-API\bin\es\System.Web.Razor.resources.dll
 C:\Users\DELL\Desktop\TABAS-API\TABAS-API\bin\es\System.Web.WebPages.resources.dll
 C:\Users\DELL\Desktop\TABAS-API\TABAS-API\bin\es\System.Web.WebPages.Deployment.resources.dll
 C:\Users\DELL\Desktop\TABAS-API\TABAS-API\bin\es\System.Web.WebPages.Razor.resources.dll
-C:\Users\DELL\Desktop\TABAS-API\TABAS-API\obj\Debug\TABAS-API.csprojAssemblyReference.cache
-C:\Users\DELL\Desktop\TABAS-API\TABAS-API\obj\Debug\TABAS-API.csproj.CoreCompileInputs.cache
 C:\Users\DELL\Desktop\TABAS-API\TABAS-API\obj\Debug\TABAS-API.csproj.CopyComplete
 C:\Users\DELL\Desktop\TABAS-API\TABAS-API\obj\Debug\TABAS-API.dll
 C:\Users\DELL\Desktop\TABAS-API\TABAS-API\obj\Debug\TABAS-API.pdb

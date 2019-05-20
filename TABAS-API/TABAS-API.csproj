@@ -183,9 +183,15 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\BagCartController.cs" />
+    <Compile Include="Controllers\BaggageController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\SignUpController.cs" />
     <Compile Include="DataObjects\Admin.cs" />
+    <Compile Include="DataObjects\BagCart.cs" />
+    <Compile Include="DataObjects\BaggageDAO.cs" />
+    <Compile Include="DataObjects\BaggageDTO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
