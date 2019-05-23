@@ -185,13 +185,16 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\BagCartController.cs" />
     <Compile Include="Controllers\BaggageController.cs" />
+    <Compile Include="Controllers\FlightController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\ScanningController.cs" />
     <Compile Include="Controllers\SignUpController.cs" />
     <Compile Include="DataObjects\Admin.cs" />
     <Compile Include="DataObjects\BagCart.cs" />
     <Compile Include="DataObjects\BaggageDAO.cs" />
     <Compile Include="DataObjects\BaggageDTO.cs" />
+    <Compile Include="DataObjects\FlightDTO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -201,6 +204,7 @@
     <Compile Include="Objects\MessageHandler.cs" />
     <Compile Include="SQLHandlers\AdminSQLHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SQLHandlers\MobileAppSQLHandler.cs" />
     <Compile Include="SQLHandlers\SQLHelper.cs" />
   </ItemGroup>
   <ItemGroup>

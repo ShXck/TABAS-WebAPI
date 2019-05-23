@@ -209,5 +209,85 @@ namespace TABAS_API.Objects
 
             return JSONHandler.BuildMsg(0, MessageHandler.ErrorMSG());
         }
+
+        /// <summary>
+        /// Obtiene las marcas de bagcarts de la base de datos y las junta en una lista.
+        /// </summary>
+        /// <returns>El resultado de la acción.</returns>
+        public static string GetAllBagCartBrands()
+        {
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            conn.Open();
+
+            string query = "SELECT brand FROM BAGCART_BRAND";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            List<string> brands = new List<string>();
+
+            string result = JSONHandler.BuildMsg(0, MessageHandler.ResourceNotFound("brands"));
+
+            using (NpgsqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    while (reader.Read()) brands.Add(reader.GetString(0));
+                    result = JSONHandler.BuildListStrResult("brands", brands);
+                }
+            }
+            cmd.Dispose();
+            conn.Close();
+            return result;
+        }
+
+        /// <summary>
+        /// Crea un nuevo vuelo en la base de datos.
+        /// </summary>
+        /// <param name="flight"></param>
+        /// <returns></returns>
+        public static string CreateNewFlight(FlightDTO flight)
+        {
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            conn.Open();
+
+            string query = "INSERT INTO FLIGHT (plane_id) VALUES(@plane)";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("plane", SQLHelper.GetPlaneID(flight.model));
+
+            int result = cmd.ExecuteNonQuery();
+
+            if (result == 1) return JSONHandler.BuildMsg(1, MessageHandler.SuccessMSG());
+
+            return JSONHandler.BuildMsg(0, MessageHandler.ErrorMSG());
+        }
+
+        /// <summary>
+        /// Obtiene los modelos de aviones de la base de datos y las junta en una lista.
+        /// </summary>
+        /// <returns>El resultado de la acción.</returns>
+        public static string GetAllPlanes()
+        {
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            conn.Open();
+
+            string query = "SELECT model FROM AIRPLANE";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            List<string> brands = new List<string>();
+
+            string result = JSONHandler.BuildMsg(0, MessageHandler.ResourceNotFound("airplanes"));
+
+            using (NpgsqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    while (reader.Read()) brands.Add(reader.GetString(0));
+                    result = JSONHandler.BuildListStrResult("airplanes", brands);
+                }
+            }
+            cmd.Dispose();
+            conn.Close();
+            return result;
+        }
     }
 }

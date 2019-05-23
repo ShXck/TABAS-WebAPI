@@ -25,6 +25,15 @@ namespace TABAS_API.Controllers
             return Ok(AdminSQLHandler.InsertNewCartBrand(JsonConvert.DeserializeObject<BagCart>(model)));
         }
 
-        /// TODO: METHOD TO RETRIEVE ALL BRANDS NAME.
+        /// <summary>
+        /// Crea una lista con las marcas de bagcarts.
+        /// </summary>
+        /// <returns>La lista de marcas.</returns>
+        [HttpGet, Route("tabas/bagcart/brands")]
+        public IHttpActionResult GetBagCartBrands()
+        {
+            // NO JSON needed
+            return Ok(AdminSQLHandler.GetAllBagCartBrands()); // OUT JSON: {brands: [A,B,C,...]}
+        }
     }
 }

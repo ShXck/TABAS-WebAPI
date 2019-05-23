@@ -52,5 +52,11 @@ namespace TABAS_API.Objects
         {
             return "No " + resource + " were found.";
         }
+
+        public static string ScanMessage(bool pass)
+        {
+            if (pass) return "Nothing found.";
+            else return "Prohibited Items in Baggage.";
+        }
     }
 }

@@ -55,5 +55,39 @@ namespace TABAS_API.Objects
 
             return result.ToString();
         }
+
+        /// <summary>
+        /// Crea un JSON array con resultado de una búsqueda.
+        /// </summary>
+        /// <param name="attribute">El nombre del atributo.</param>
+        /// <param name="results">La lista de resultados.</param>
+        /// <returns>El JSON con la información.</returns>
+        public static string BuildListIntResult(string attribute, List<int> results)
+        {
+            JArray array = new JArray();
+            for (int i = 0; i < results.Count; i++)
+            {
+                array.Add(results.ElementAt(i));
+            }
+            JObject result = new JObject();
+            result["http_result"] = 1;
+            result[attribute] = array;
+
+            return result.ToString();
+        }
+
+        public static string BuildScanResult(bool pass)
+        {
+            JObject json = new JObject();
+            json["http_result"] = 1;
+
+            if (pass)
+            {
+                json["msg"] = MessageHandler.ScanMessage(pass);
+                json["pass"] = pass;
+            }
+
+            return json.ToString();
+        }
     }
 }

@@ -127,6 +127,11 @@ namespace TABAS_API.SQLHandlers
             return new Tuple<int, int>(GetUserID(bag_dto.username), color_id);
         }
 
+        /// <summary>
+        /// Obtiene el id de una marca de bagcart.
+        /// </summary>
+        /// <param name="brand">El nombre de la marca.</param>
+        /// <returns>El id de la marca.</returns>
         public static int GetBrandID(string brand)
         {
             NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
@@ -143,6 +148,47 @@ namespace TABAS_API.SQLHandlers
                 if (reader.Read()) b_id = reader.GetInt32(0);
             }
             return b_id;
+        }
+
+        /// <summary>
+        /// Obtiene el id de un modelo de avión.
+        /// </summary>
+        /// <param name="brand">El nombre del modelo.</param>
+        /// <returns>El id del modelo.</returns>
+        public static int GetPlaneID(string model)
+        {
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+
+            string query = "SELECT plane_id FROM AIRPLANE WHERE model = @model";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("model", model);
+
+            int plane_id = -1;
+
+            using (NpgsqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.Read()) plane_id = reader.GetInt32(0);
+            }
+            return plane_id;
+        }
+
+        public static int GetUserIdBySuitcase(int suit_id)
+        {
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+
+            string query = "SELECT user_id FROM SUITCASE WHERE suitcase_id = @id";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("id", suit_id);
+
+            int user_id = -1;
+
+            using (NpgsqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.Read()) user_id = reader.GetInt32(0);
+            }
+            return user_id;
         }
        
 
