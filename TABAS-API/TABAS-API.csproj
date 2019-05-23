@@ -195,6 +195,7 @@
     <Compile Include="DataObjects\BaggageDAO.cs" />
     <Compile Include="DataObjects\BaggageDTO.cs" />
     <Compile Include="DataObjects\FlightDTO.cs" />
+    <Compile Include="DataObjects\ScannedBaggDTO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

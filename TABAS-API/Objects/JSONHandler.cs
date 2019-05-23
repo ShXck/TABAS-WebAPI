@@ -76,17 +76,17 @@ namespace TABAS_API.Objects
             return result.ToString();
         }
 
+        /// <summary>
+        /// Construye un JSON con el resultado del scaneo.
+        /// </summary>
+        /// <param name="pass">El resultado del scaneo.</param>
+        /// <returns>El mensaje con el resultado del escaneo.</returns>
         public static string BuildScanResult(bool pass)
         {
             JObject json = new JObject();
             json["http_result"] = 1;
-
-            if (pass)
-            {
-                json["msg"] = MessageHandler.ScanMessage(pass);
-                json["pass"] = pass;
-            }
-
+            json["pass"] = pass;
+            json["msg"] = MessageHandler.ScanMessage(pass);
             return json.ToString();
         }
     }

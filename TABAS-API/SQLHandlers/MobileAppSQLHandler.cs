@@ -43,13 +43,46 @@ namespace TABAS_API.SQLHandlers
             return result;
         }
 
+        /// <summary>
+        /// Produce un resultado de escaneo.
+        /// </summary>
+        /// <returns>El resultado del escaneo.</returns>
         public static string ScanBaggage()
         {
             if (PassScan()) return JSONHandler.BuildScanResult(true);
             else return JSONHandler.BuildScanResult(false);
         }
 
+        /// <summary>
+        /// Inserta una maleta escaneada en la base de datos.
+        /// </summary>
+        /// <param name="scan_info">La información del Escaneo.</param>
+        /// <returns>El resultado de la acción.</returns>
+        public static string InsertScannedBaggage(ScannedBaggDTO scan_info)
+        {
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            conn.Open();
 
+            string query = "INSERT INTO SUITCASE_CHECK (suitcase_id, user_id, status, comment) VALUES (@suit_id, @user_id, @status, @comment)";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("suit_id", scan_info.suitcase_id);
+            cmd.Parameters.AddWithValue("user_id", SQLHelper.GetUserID(scan_info.username));
+            cmd.Parameters.AddWithValue("status", scan_info.status);
+
+            if (scan_info.comment == null || scan_info.comment.Equals(String.Empty)) cmd.Parameters.AddWithValue("comment", "No issues");
+            else cmd.Parameters.AddWithValue("comment", scan_info.comment);
+
+            int result = cmd.ExecuteNonQuery();
+
+            if (result == 1) return JSONHandler.BuildMsg(1, MessageHandler.SuccessMSG());
+            else return JSONHandler.BuildMsg(0, MessageHandler.ErrorMSG());
+        }
+
+        /// <summary>
+        /// Genera un resultado de escaneo basado en probabilidad.
+        /// </summary>
+        /// <returns>El resultado del escaneo.</returns>
         private static bool PassScan()
         {
             Random rdn = new Random();

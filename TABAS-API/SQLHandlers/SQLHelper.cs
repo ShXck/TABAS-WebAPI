@@ -48,6 +48,7 @@ namespace TABAS_API.SQLHandlers
         {
             System.Diagnostics.Debug.WriteLine("US: " + username);
             SqlConnection conn = ConnectionHandler.GetSSMSConnection();
+
             conn.Open();
 
             string query = "SELECT user_id FROM [USER] WHERE username = @us";
@@ -64,8 +65,10 @@ namespace TABAS_API.SQLHandlers
                 {
                     if (reader.Read()) user_id = reader.GetInt32(0);
                 }
-            }            
+            }
             conn.Close();
+
+            System.Diagnostics.Debug.WriteLine("return " + user_id);
             return user_id;           
         }
 

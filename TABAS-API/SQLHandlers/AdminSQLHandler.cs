@@ -52,7 +52,6 @@ namespace TABAS_API.Objects
         public static string AssignUserRoles(string username, List<string> roles)
         {
             SqlConnection conn = ConnectionHandler.GetSSMSConnection();
-            int user_id = SQLHelper.GetUserID(username);
 
             conn.Open();
             
@@ -60,7 +59,7 @@ namespace TABAS_API.Objects
             {
                 string query = "INSERT INTO USER_ROLE VALUES(@id, @role)";
                 SqlCommand cmd = new SqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("id", user_id);
+                cmd.Parameters.AddWithValue("id", SQLHelper.GetUserID(username));
                 cmd.Parameters.AddWithValue("role", SQLHelper.GetRoleID(roles.ElementAt(i)));
                 cmd.ExecuteNonQuery();
                 cmd.Dispose();
