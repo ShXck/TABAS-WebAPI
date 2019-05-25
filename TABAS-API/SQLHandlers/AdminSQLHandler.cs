@@ -43,6 +43,32 @@ namespace TABAS_API.Objects
             return JSONHandler.BuildMsg(1, MessageHandler.UserExistsMSG());
         }
 
+        public static string GetAllRoles()
+        {
+            SqlConnection conn = ConnectionHandler.GetSSMSConnection();
+            conn.Open();
+
+            string query = "SELECT role from ROLE";
+            SqlCommand cmd = new SqlCommand(query, conn);
+
+            List<string> roles = new List<string>();
+
+            string result = JSONHandler.BuildMsg(0, MessageHandler.ResourceNotFound("roles"));
+
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    while (reader.Read()) roles.Add(reader.GetString(0));
+                    result = JSONHandler.BuildListStrResult("roles", roles);
+                }
+            }
+
+            cmd.Dispose();
+            conn.Close();
+            return result;
+        } 
+
         /// <summary>
         /// Asigna roles a un usuario.
         /// </summary>

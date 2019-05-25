@@ -37,5 +37,16 @@ namespace TABAS_API.Controllers
             List<string> roles_lst = JSONHandler.JArrayToList(roles);
             return Ok(AdminSQLHandler.AssignUserRoles(user, roles_lst));
         }
+
+        /// <summary>
+        /// Obtiene una lista de todos los roles.
+        /// </summary>
+        /// <returns>La lista de roles</returns>
+        [HttpGet, Route("tabas/roles")]
+        public IHttpActionResult GetRoles()
+        {
+            // NO JSON NEEDED.
+            return Ok(AdminSQLHandler.GetAllRoles()); // OUTPUT JSON: {"roles": ["a", "b", ...]}
+        }
     }
 }
