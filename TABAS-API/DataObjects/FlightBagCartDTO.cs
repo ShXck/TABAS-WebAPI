@@ -5,10 +5,9 @@ using System.Web;
 
 namespace TABAS_API.DataObjects
 {
-    public class BagCart
+    public class FlightBagCartDTO
     {
-        public string brand;
-        public int model;
-        public int capacity;
+        public int flight_id;
+        public string bg_brand; // marca de bagcart.
     }
 }

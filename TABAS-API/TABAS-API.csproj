@@ -194,7 +194,10 @@
     <Compile Include="DataObjects\BagCart.cs" />
     <Compile Include="DataObjects\BaggageDAO.cs" />
     <Compile Include="DataObjects\BaggageDTO.cs" />
+    <Compile Include="DataObjects\BagToSectionDTO.cs" />
+    <Compile Include="DataObjects\FlightBagCartDTO.cs" />
     <Compile Include="DataObjects\FlightDTO.cs" />
+    <Compile Include="DataObjects\LoginDTO.cs" />
     <Compile Include="DataObjects\ScannedBaggDTO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

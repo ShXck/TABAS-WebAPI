@@ -20,8 +20,8 @@ namespace TABAS_API.Controllers
         [HttpPost, Route("tabas/login")]
         public IHttpActionResult Login([FromBody] string credentials)
         {
-            /// Expected JSON: {"username": "XXXX", "password": "XXXX"}
-            return Ok(AdminSQLHandler.UserLogin(JsonConvert.DeserializeObject<Admin>(credentials)));
+            /// Expected JSON: {"username": "XXXX", "password": "XXXX", "role": "XXXXX"}
+            return Ok(AdminSQLHandler.UserLogin(JsonConvert.DeserializeObject<LoginDTO>(credentials)));
         }
     }
 }

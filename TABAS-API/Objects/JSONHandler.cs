@@ -77,6 +77,19 @@ namespace TABAS_API.Objects
         }
 
         /// <summary>
+        /// Construye un JSON con el código de sefuridad generado para el bagcart.
+        /// </summary>
+        /// <param name="seal">El código de seguridad generado.</param>
+        /// <returns>El json con el código.</returns>
+        public static string BuildSeal(string seal)
+        {
+            JObject json = new JObject();
+            json["seal"] = seal;
+            json["http_result"] = 1;
+            return json.ToString();
+        }
+
+        /// <summary>
         /// Construye un JSON con el resultado del scaneo.
         /// </summary>
         /// <param name="pass">El resultado del scaneo.</param>

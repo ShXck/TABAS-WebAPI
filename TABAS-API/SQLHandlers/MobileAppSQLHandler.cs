@@ -80,6 +80,38 @@ namespace TABAS_API.SQLHandlers
         }
 
         /// <summary>
+        /// Obtiene una lista de las secciones de un avión dado el vuelo asociado a ese avión.
+        /// </summary>
+        /// <param name="flight">el id del vuelo.</param>
+        /// <returns>La lista con las secciones.</returns>
+        public static string GetFlightPlaneSections(int flight)
+        {
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            conn.Open();
+
+            string query = "SELECT section_id FROM AIRPLANE_SECTION WHERE plane_id = @plane";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("plane", SQLHelper.GetPlaneIDByFlight(flight));
+
+            List<int> sections = new List<int>();
+
+            string result = JSONHandler.BuildMsg(0, MessageHandler.ResourceNotFound("sections"));
+
+            using (NpgsqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    while (reader.Read()) sections.Add(reader.GetInt32(0));
+                    result = JSONHandler.BuildListIntResult("sections", sections);
+                }
+            }
+            cmd.Dispose();
+            conn.Close();
+            return result;
+        }
+
+        /// <summary>
         /// Genera un resultado de escaneo basado en probabilidad.
         /// </summary>
         /// <returns>El resultado del escaneo.</returns>

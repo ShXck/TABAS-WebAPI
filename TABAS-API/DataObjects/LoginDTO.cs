@@ -5,10 +5,10 @@ using System.Web;
 
 namespace TABAS_API.DataObjects
 {
-    public class BagCart
+    public class LoginDTO
     {
-        public string brand;
-        public int model;
-        public int capacity;
+        public string username;
+        public string password;
+        public string role;
     }
 }

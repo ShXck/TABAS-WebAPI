@@ -49,8 +49,6 @@ namespace TABAS_API.SQLHandlers
             System.Diagnostics.Debug.WriteLine("US: " + username);
             SqlConnection conn = ConnectionHandler.GetSSMSConnection();
 
-            conn.Open();
-
             string query = "SELECT user_id FROM [USER] WHERE username = @us";
             
             SqlCommand cmd = new SqlCommand(query, conn);
@@ -66,9 +64,6 @@ namespace TABAS_API.SQLHandlers
                     if (reader.Read()) user_id = reader.GetInt32(0);
                 }
             }
-            conn.Close();
-
-            System.Diagnostics.Debug.WriteLine("return " + user_id);
             return user_id;           
         }
 
@@ -176,6 +171,11 @@ namespace TABAS_API.SQLHandlers
             return plane_id;
         }
 
+        /// <summary>
+        /// Obtiene la id de un usuario asociada a una maleta.
+        /// </summary>
+        /// <param name="suit_id">El id de la maleta.</param>
+        /// <returns>El id del usuario.</returns>
         public static int GetUserIdBySuitcase(int suit_id)
         {
             NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
@@ -193,8 +193,126 @@ namespace TABAS_API.SQLHandlers
             }
             return user_id;
         }
-       
 
+        /// <summary>
+        /// Obtiene el id del avión asociado a un vuelo.
+        /// </summary>
+        /// <param name="flid">El id del vuelo.</param>
+        /// <returns>El id del avión.</returns>
+        public static int GetPlaneIDByFlight(int flid)
+        {
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
 
+            string query = "SELECT plane_id FROM FLIGHT WHERE flight_id = @id";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("id", flid);
+
+            int pl_id = -1;
+
+            using (NpgsqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.Read()) pl_id = reader.GetInt32(0);
+            }
+            return pl_id;
+        }
+
+        /// <summary>
+        /// Obtiene la capacidad máxima de un bagcart.
+        /// </summary>
+        /// <param name="brand">La marca del bargcart.</param>
+        /// <returns>La capacidad el bagcart.</returns>
+        public static int GetBagcartCapacity(string brand)
+        {
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+
+            string query = "SELECT capacity FROM BAGCART WHERE brand_if = @id";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("id", GetBrandID(brand));
+
+            int capacity = -1;
+
+            using (NpgsqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.Read()) capacity = reader.GetInt32(0);
+            }
+            return capacity;
+        }
+
+        /// <summary>
+        /// Obtiene el peso de una maleta.
+        /// </summary>
+        /// <param name="suit_id">El id de la maleta.</param>
+        /// <returns>El peso de la maleta.</returns>
+        public static double GetBaggageWeight(int suit_id)
+        {
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+
+            string query = "SELECT weight FROM SUITCASE WHERE suitcase_id = @id";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("id", suit_id);
+
+            double weight = -1;
+
+            using (NpgsqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.Read()) weight = reader.GetDouble(0);
+            }
+            return weight;
+        }
+
+        /// <summary>
+        /// Determina si una sección está llena o no.
+        /// </summary>
+        /// <param name="sec_id">El id de la sección.</param>
+        /// <returns>Si está lleno o no.</returns>
+        public static bool IsSectionFull(int sec_id)
+        {
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            conn.Open();
+
+            string query = "SELECT suitcase_id FROM BAG_TO_SECTION WHERE section_id = @id";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("id", sec_id);
+
+            double curr_weight = 0;
+
+            using (NpgsqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    while (reader.Read()) curr_weight += GetBaggageWeight(reader.GetInt32(0));
+
+                    if (curr_weight <= GetSectionMaxWeight(sec_id)) return false;
+                }
+            }
+            conn.Close();
+            cmd.Dispose();
+            return true;
+        }
+
+        private static double GetSectionMaxWeight(int sec_id)
+        {
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+
+            string query = "SELECT weight FROM AIRPLANE_SECTION WHERE section_id = @id";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("id", sec_id);
+
+            double weight = 0;
+
+            using (NpgsqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    weight = reader.GetDouble(0);
+                }
+            }
+            return weight;
+        }
     }
 }
