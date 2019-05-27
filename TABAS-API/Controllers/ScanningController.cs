@@ -29,7 +29,14 @@ namespace TABAS_API.Controllers
         [HttpGet, Route("tabas/scan/")]
         public IHttpActionResult ScanBaggage()
         {
+            // NO JSON NEEDED.
             return Ok(MobileAppSQLHandler.ScanBaggage());
+            /**
+             * OUTPUT JSON:
+             *     "{"http_result": 1,"pass": false,"status": "Rejected"}"
+
+                   "{"http_result": 1,"pass": true,"status": "Accepted"}"
+               */
         }
 
         /// <summary>
@@ -40,7 +47,8 @@ namespace TABAS_API.Controllers
         [HttpPost, Route("tabas/scan/baggage")]
         public IHttpActionResult InsertScannedBaggage([FromBody] string bagg_details)
         {
-            // JSON Expected: '{"suitcase_id":X, "username": "XXX", "status": "XXX", "comment": "XXXXX"}'
+            // JSON Expected: '{"suitcase_id":X, "username": "XXX", "status": "XXX", "comment": "XXXXX"}' if bagggage was rejected;
+                               // '{"suitcase_id":X, "username": "XXX", "status": "XXX"}' otherwise
             return Ok(MobileAppSQLHandler.InsertScannedBaggage(JsonConvert.DeserializeObject<ScannedBaggDTO>(bagg_details)));
         }
 

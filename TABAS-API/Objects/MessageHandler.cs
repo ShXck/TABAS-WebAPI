@@ -55,8 +55,8 @@ namespace TABAS_API.Objects
 
         public static string ScanMessage(bool pass)
         {
-            if (pass) return "Nothing found.";
-            else return "Prohibited Items in Baggage.";
+            if (pass) return "Accepted";
+            else return "Rejected";
         }
     }
 }

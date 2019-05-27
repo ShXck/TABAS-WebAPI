@@ -99,7 +99,7 @@ namespace TABAS_API.Objects
             JObject json = new JObject();
             json["http_result"] = 1;
             json["pass"] = pass;
-            json["msg"] = MessageHandler.ScanMessage(pass);
+            json["status"] = MessageHandler.ScanMessage(pass);
             return json.ToString();
         }
     }
