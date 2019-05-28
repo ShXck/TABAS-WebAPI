@@ -53,10 +53,25 @@ namespace TABAS_API.Objects
             return "No " + resource + " were found.";
         }
 
+        /// <summary>
+        /// Muestra un mensaje sobre el estado de un escaneo a una maleta.
+        /// </summary>
+        /// <param name="pass">El resultado del escaneo.</param>
+        /// <returns>El mensaje del estado del escaneo.</returns>
         public static string ScanMessage(bool pass)
         {
             if (pass) return "Accepted";
             else return "Rejected";
+        }
+
+        /// <summary>
+        /// Muestra un mensaje sobre sección de avión llena.
+        /// </summary>
+        /// <param name="section">El id de la sección.</param>
+        /// <returns>El mensaje de error.</returns>
+        public static string FullSection(int section)
+        {
+            return "Unable to assign baggage to section " + section + ". This section is currently full.";
         }
     }
 }

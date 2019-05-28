@@ -279,6 +279,7 @@ namespace TABAS_API.SQLHandlers
             cmd.Parameters.AddWithValue("id", sec_id);
 
             double curr_weight = 0;
+            double max_w = GetSectionMaxWeight(sec_id);
 
             using (NpgsqlDataReader reader = cmd.ExecuteReader())
             {
@@ -286,7 +287,15 @@ namespace TABAS_API.SQLHandlers
                 {
                     while (reader.Read()) curr_weight += GetBaggageWeight(reader.GetInt32(0));
 
-                    if (curr_weight <= GetSectionMaxWeight(sec_id)) return false;
+                    if (curr_weight <= max_w)
+                    {
+                        conn.Close();
+                        return false;
+                    }
+                } else
+                {
+                    conn.Close();
+                    return false;
                 }
             }
             conn.Close();
@@ -294,6 +303,11 @@ namespace TABAS_API.SQLHandlers
             return true;
         }
 
+        /// <summary>
+        /// Obtiene el peso máximo de una sección de un avión.
+        /// </summary>
+        /// <param name="sec_id">El id de la sección.</param>
+        /// <returns>El peso máximo de la sección.</returns>
         private static double GetSectionMaxWeight(int sec_id)
         {
             NpgsqlConnection conn = ConnectionHandler.GetPGConnection();

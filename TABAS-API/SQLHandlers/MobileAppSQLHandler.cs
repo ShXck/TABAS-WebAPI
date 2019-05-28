@@ -110,6 +110,30 @@ namespace TABAS_API.SQLHandlers
             return result;
         }
 
+
+        public static string AssignBaggageToSection(BagToSectionDTO bagg_section)
+        {
+            string result = JSONHandler.BuildMsg(0, MessageHandler.FullSection(bagg_section.section_id));
+            if (!SQLHelper.IsSectionFull(bagg_section.section_id))
+            {
+                NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+                conn.Open();
+
+                string query = "INSERT INTO BAG_TO_SECTION VALUES (@fid, @secid, @suitid)";
+                NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+                cmd.Parameters.AddWithValue("fid", bagg_section.flight_id);
+                cmd.Parameters.AddWithValue("secid", bagg_section.section_id);
+                cmd.Parameters.AddWithValue("suitid", bagg_section.suitcase_id);
+
+                int q_result = cmd.ExecuteNonQuery();
+
+                if (q_result == 1) return JSONHandler.BuildMsg(1, MessageHandler.SuccessMSG());
+                else return JSONHandler.BuildMsg(0, MessageHandler.ErrorMSG());
+            }
+            return result;
+        }
+
         /// <summary>
         /// Genera un resultado de escaneo basado en probabilidad.
         /// </summary>
