@@ -15,13 +15,14 @@ namespace TABAS_API.Controllers
         [HttpPost, Route("tabas/bagcart/create")]
         public IHttpActionResult CreateBagCart([FromBody] string bc_data)
         {
-            // Expected JSON: '{"brand":"XXX", "model": XXXX, "capacity": XXX}'
+            // JSON EXPECTED: '{"brand":"XXX", "model": XXXX, "capacity": XXX}'
             return Ok(AdminSQLHandler.CreateBagCart(JsonConvert.DeserializeObject<BagCart>(bc_data)));
         }
 
         [HttpPost, Route("tabas/bagcart/brands/new")]
         public IHttpActionResult InsertNewBrand([FromBody] string model)
         {
+            /// JSON EXPECTED: {"brand": "XXXXX"}
             return Ok(AdminSQLHandler.InsertNewCartBrand(JsonConvert.DeserializeObject<BagCart>(model)));
         }
 
@@ -46,6 +47,15 @@ namespace TABAS_API.Controllers
         {
             // NO JSON NEEDED
             return Ok(AdminSQLHandler.CloseBagcart(flight)); // OUTPUT JSON: "{"seal": "xxxxxx", "http_result\": "X"}"
+        }
+
+        /// <summary>
+        /// Obtiene una lista de todos los bagcarts creados.
+        /// </summary>
+        /// <returns>El resultado de la acción.</returns>
+        public IHttpActionResult GetBagcarts()
+        {
+            return Ok(AdminSQLHandler.GetBagcarts()); // IMPLEMENTATION NOT COMPLETED;
         }
     }
 }

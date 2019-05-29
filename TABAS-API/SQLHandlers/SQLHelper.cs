@@ -328,5 +328,59 @@ namespace TABAS_API.SQLHandlers
             }
             return weight;
         }
+
+        /// <summary>
+        /// Indica si ya existe un bagcart con las mismas especificaciones.
+        /// </summary>
+        /// <param name="bagcart">Las especificaciones el bagcart.</param>
+        /// <returns>Si ya existe el bagcart o no.</returns>
+        public static bool BagcartExists(BagCart bagcart)
+        {
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            conn.Open();
+
+            string query = "SELECT brand_id, year, capacity FROM BAGCART WHERE brand_id = @id and year = @year and capacity = @cap";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("id", SQLHelper.GetBrandID(bagcart.brand));
+            cmd.Parameters.AddWithValue("year", bagcart.model);
+            cmd.Parameters.AddWithValue("cap", bagcart.capacity);
+
+            bool exists = false;
+
+            using (NpgsqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.HasRows) exists = true;               
+            }
+            cmd.Dispose();
+            conn.Close();
+            return exists;
+        }
+
+        /// <summary>
+        /// Indica si ya existe una marca de bagcart con el mismo nombre.
+        /// </summary>
+        /// <param name="brand">El nombre de la marca.</param>
+        /// <returns>Si la marca existe o no.</returns>
+        public static bool BrandExists(string brand)
+        {
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            conn.Open();
+
+            string query = "SELECT brand FROM BAGCART_BRAND WHERE brand = @brand";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("brand", brand);
+
+            bool exists = false;
+
+            using (NpgsqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.HasRows) exists = true;
+            }
+            cmd.Dispose();
+            conn.Close();
+            return exists;
+        }
     }
 }

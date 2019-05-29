@@ -193,24 +193,28 @@ namespace TABAS_API.Objects
         /// <returns>El resultado de la acción.</returns>
         public static string CreateBagCart(BagCart cart)
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
-            conn.Open();
+            if (!SQLHelper.BagcartExists(cart))
+            {
+                NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+                conn.Open();
 
-            string query = "INSERT INTO BAGCART (brand_id, year, capacity) VALUES(@id, @year, @cap)";
-            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+                string query = "INSERT INTO BAGCART (brand_id, year, capacity) VALUES(@id, @year, @cap)";
+                NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
 
-            cmd.Parameters.AddWithValue("id", SQLHelper.GetBrandID(cart.brand));
-            cmd.Parameters.AddWithValue("year", cart.model);
-            cmd.Parameters.AddWithValue("cap", cart.capacity);
+                cmd.Parameters.AddWithValue("id", SQLHelper.GetBrandID(cart.brand));
+                cmd.Parameters.AddWithValue("year", cart.model);
+                cmd.Parameters.AddWithValue("cap", cart.capacity);
 
-            int result = cmd.ExecuteNonQuery();
+                int result = cmd.ExecuteNonQuery();
 
-            cmd.Dispose();
-            conn.Close();
+                cmd.Dispose();
+                conn.Close();
 
-            if (result == 1) return JSONHandler.BuildMsg(1, MessageHandler.SuccessMSG());
+                if (result == 1) return JSONHandler.BuildMsg(1, MessageHandler.SuccessMSG());
 
-            return JSONHandler.BuildMsg(0, MessageHandler.ErrorMSG());
+                return JSONHandler.BuildMsg(0, MessageHandler.ErrorMSG());
+            }
+            return JSONHandler.BuildMsg(0, MessageHandler.ResourceAlreadyExists("Bagcart"));
         }
 
 
@@ -221,19 +225,26 @@ namespace TABAS_API.Objects
         /// <returns>El resultado de la acción.</returns>
         public static string InsertNewCartBrand(BagCart cart)
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
-            conn.Open();
+            if (!SQLHelper.BrandExists(cart.brand))
+            {
+                NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+                conn.Open();
 
-            string query = "INSERT INTO BAGCART_BRAND (brand) VALUES(@brand)";
-            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+                string query = "INSERT INTO BAGCART_BRAND (brand) VALUES(@brand)";
+                NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
 
-            cmd.Parameters.AddWithValue("brand", cart.brand);
+                cmd.Parameters.AddWithValue("brand", cart.brand);
 
-            int result = cmd.ExecuteNonQuery();
+                int result = cmd.ExecuteNonQuery();
 
-            if (result == 1) return JSONHandler.BuildMsg(1, MessageHandler.SuccessMSG());
+                if (result == 1) return JSONHandler.BuildMsg(1, MessageHandler.SuccessMSG());
 
-            return JSONHandler.BuildMsg(0, MessageHandler.ErrorMSG());
+                conn.Close();
+                cmd.Dispose();
+
+                return JSONHandler.BuildMsg(0, MessageHandler.ErrorMSG());
+            }
+            return JSONHandler.BuildMsg(0, MessageHandler.ResourceAlreadyExists("Brand"));
         }
 
         /// <summary>
@@ -320,17 +331,17 @@ namespace TABAS_API.Objects
         /// Obtiene una lista de los id de los vuelos.
         /// </summary>
         /// <returns>La lista de los vuelos.</returns>
-        public static string GetAllFlights()
+        public static string GetUnassignedFlights()
         {
             NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
             conn.Open();
 
-            string query = "SELECT flight_id FROM FLIGHT";
+            string query = "SELECT flight_id FROM FLIGHT WHERE  NOT EXISTS (SELECT FROM BAGCART_TO_FLIGHT WHERE  flight_id = FLIGHT.flight_id)";
             NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
 
             List<int> flights = new List<int>();
 
-            string result = JSONHandler.BuildMsg(0, MessageHandler.ResourceNotFound("flights"));
+            string result = JSONHandler.BuildMsg(0, MessageHandler.ResourceNotFound("Unassigned Flights"));
 
             using (NpgsqlDataReader reader = cmd.ExecuteReader())
             {
@@ -361,7 +372,6 @@ namespace TABAS_API.Objects
             int id = SQLHelper.GetBrandID(fl_bagcart.bg_brand);
 
             System.Diagnostics.Debug.WriteLine("BG ID: " + id);
-
 
             cmd.Parameters.AddWithValue("flid", fl_bagcart.flight_id);
             cmd.Parameters.AddWithValue("bgid", id);
@@ -401,6 +411,67 @@ namespace TABAS_API.Objects
 
             if (result == 1) return JSONHandler.BuildSeal(sec_seal);
             else return JSONHandler.BuildMsg(0, MessageHandler.ErrorMSG());
+        }
+
+        /// <summary>
+        /// Obtiene una lista de aquellos vuelos que no hayan sido cerrados.
+        /// </summary>
+        /// <returns>La lista de vuelos activos.</returns>
+        public static string GetAllActiveFlights()
+        {
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            conn.Open();
+
+            string query = "SELECT flight_id FROM BAGCART_TO_FLIGHT WHERE LENGTH(seal) = @len";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("len", 1);
+
+            List<int> flights = new List<int>();
+
+            string result = JSONHandler.BuildMsg(0, MessageHandler.ResourceNotFound("Active Flights"));
+
+            using (NpgsqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    while (reader.Read()) flights.Add(reader.GetInt32(0));
+                    result = JSONHandler.BuildListIntResult("flights", flights);
+                }
+            }
+            cmd.Dispose();
+            conn.Close();
+            return result;
+        }
+
+        public static string GetBagcarts()
+        {
+            /*NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            conn.Open();
+
+            string query = "SELECT brand FROM BAGCART WHERE LENGTH(seal) = @len";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("len", 1);
+
+            List<int> flights = new List<int>();
+
+            string result = JSONHandler.BuildMsg(0, MessageHandler.ResourceNotFound("Active Flights"));
+
+            using (NpgsqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    while (reader.Read()) flights.Add(reader.GetInt32(0));
+                    result = JSONHandler.BuildListIntResult("flights", flights);
+                }
+            }
+            cmd.Dispose();
+            conn.Close();
+            return result;*/ 
+
+            // TODO: IMPLEMENT
+            return "";
         }
 
         /// <summary>

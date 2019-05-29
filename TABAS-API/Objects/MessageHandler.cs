@@ -72,6 +72,16 @@ namespace TABAS_API.Objects
         public static string FullSection(int section)
         {
             return "Unable to assign baggage to section " + section + ". This section is currently full.";
+        } 
+
+        /// <summary>
+        /// Crea un mensaje que señala la existencia de un recurso.
+        /// </summary>
+        /// <param name="res">El nombre del recurso.</param>
+        /// <returns>Un mensaje que señala la existencia del recurso.</returns>
+        public static string ResourceAlreadyExists(string res)
+        {
+            return res + " already exists in the system.";
         }
     }
 }

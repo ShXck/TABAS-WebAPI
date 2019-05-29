@@ -37,14 +37,26 @@ namespace TABAS_API.Controllers
         }
 
         /// <summary>
-        /// Obtiene una lista de los id de los vuelos existentes.
+        /// Obtiene una lista de los id de los vuelos existentes que no tienen un bagcart asignado.
         /// </summary>
         /// <returns>El resultado de la acción.</returns>
-        [HttpGet, Route("tabas/flights")]
-        public IHttpActionResult GetFlights()
+        [HttpGet, Route("tabas/flights/unassigned")]
+        public IHttpActionResult GetUnassignedFlights()
         {
             // NO JSON NEEDED
-            return Ok(AdminSQLHandler.GetAllFlights()); // OUTPUT JSON: {flights: [1,2,3, ...], http_result: X}
+            return Ok(AdminSQLHandler.GetUnassignedFlights()); // OUTPUT JSON: {flights: [1,2,3, ...], http_result: X}
+        }
+
+        /// <summary>
+        /// Obtiene los vuelos que ya tienen un bagcart asignado y que el vuelo no ha sido cerrado. Es decir, que el 
+        /// código del bagcart no ha sido generado.
+        /// </summary>
+        /// <returns>La lista de vuelos activos.</returns>
+        [HttpGet, Route("tabas/flights/active")]
+        public IHttpActionResult GetActiveFlights()
+        {
+            /// NO JSON NEEDED
+            return Ok(AdminSQLHandler.GetAllActiveFlights()); // OUTPUT JSON: {flights: [1,2,3, ...], http_result: X}
         }
 
         /// <summary>
