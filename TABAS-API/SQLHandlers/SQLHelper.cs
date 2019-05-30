@@ -46,7 +46,6 @@ namespace TABAS_API.SQLHandlers
         /// <returns>El user_id</returns>
         public static int GetUserID(string username)
         {
-            System.Diagnostics.Debug.WriteLine("US: " + username);
             SqlConnection conn = ConnectionHandler.GetSSMSConnection();
 
             string query = "SELECT user_id FROM [USER] WHERE username = @us";
@@ -102,7 +101,9 @@ namespace TABAS_API.SQLHandlers
         public static Tuple<int, int> GetBaggageIDs(BaggageDTO bag_dto)
         {
             NpgsqlConnection pconn = ConnectionHandler.GetPGConnection();
+            SqlConnection sconn = ConnectionHandler.GetSSMSConnection();
 
+            sconn.Open();
             pconn.Open();
 
             string color_id_qry = "SELECT color_id FROM COLOR WHERE color_name = @color";
@@ -118,11 +119,14 @@ namespace TABAS_API.SQLHandlers
                 if (reader.Read()) color_id = reader.GetInt32(0);
             }
 
+            int user_id = GetUserID(bag_dto.username);
+
             color_cmd.Dispose();
 
             pconn.Close();
+            sconn.Close();
 
-            return new Tuple<int, int>(GetUserID(bag_dto.username), color_id);
+            return new Tuple<int, int>(user_id, color_id);
         }
 
         /// <summary>
@@ -280,27 +284,25 @@ namespace TABAS_API.SQLHandlers
 
             double curr_weight = 0;
             double max_w = GetSectionMaxWeight(sec_id);
+            bool is_full = true;
+
+            List<int> suits_id = new List<int>();
 
             using (NpgsqlDataReader reader = cmd.ExecuteReader())
             {
                 if (reader.HasRows)
                 {
-                    while (reader.Read()) curr_weight += GetBaggageWeight(reader.GetInt32(0));
-
-                    if (curr_weight <= max_w)
-                    {
-                        conn.Close();
-                        return false;
-                    }
-                } else
-                {
-                    conn.Close();
-                    return false;
+                    while (reader.Read()) suits_id.Add(reader.GetInt32(0));
                 }
             }
+
+            for (int i = 0; i < suits_id.Count; i++) curr_weight += GetBaggageWeight(suits_id.ElementAt(i));
+
+            if (curr_weight <= max_w) is_full = false;
+
             conn.Close();
             cmd.Dispose();
-            return true;
+            return is_full;
         }
 
         /// <summary>

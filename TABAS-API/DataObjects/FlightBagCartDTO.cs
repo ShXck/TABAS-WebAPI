@@ -8,6 +8,6 @@ namespace TABAS_API.DataObjects
     public class FlightBagCartDTO
     {
         public int flight_id;
-        public string bg_brand; // marca de bagcart.
+        public int bagcart_id; // marca de bagcart.
     }
 }

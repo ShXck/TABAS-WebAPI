@@ -67,7 +67,7 @@ namespace TABAS_API.Controllers
         [HttpPost, Route("tabas/flights/bagcart/assign")]
         public IHttpActionResult AssignBagcartToFlight([FromBody] string data)
         {
-            // JSON EXPECTED: {"flight_id": X, "bg_brand": XXXX}
+            // JSON EXPECTED: {"flight_id": X, "bagcart_id": XXXX}
             return Ok(AdminSQLHandler.AssignBagcart(JsonConvert.DeserializeObject<FlightBagCartDTO>(data)));
         }
 
@@ -88,6 +88,17 @@ namespace TABAS_API.Controllers
         {
             // JSON EXPECTED: {"flight_id": X, "section_id": X, "suitcase_id": X, "user_id": X}
             return Ok(MobileAppSQLHandler.AssignBaggageToSection(JsonConvert.DeserializeObject<BagToSectionDTO>(data)));
+        }
+
+        /// <summary>
+        /// Obtiene una lista de maletas que no han sido asignadas a vuelos.
+        /// </summary>
+        /// <returns>El resultado de la acción.</returns>
+        [HttpGet, Route("tabas/baggage/unassigned")]
+        public IHttpActionResult GetUnassignedBaggage()
+        {
+            // NO JSON NEEDED
+            return Ok(AdminSQLHandler.GetUnassignedBaggage());
         }
     }
 }

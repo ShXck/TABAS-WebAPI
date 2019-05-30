@@ -168,13 +168,13 @@ namespace TABAS_API.Objects
             NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
             conn.Open();
 
-            string query = "INSERT INTO SUITCASE (weight, color_id, cost, user_id) VALUES(@weight, @color, @cost, @user)";
+            string query = "INSERT INTO SUITCASE (weight, color_id, user_id, cost) VALUES (@weight, @color, @user, @cost)";
             NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
 
             cmd.Parameters.AddWithValue("weight", bagg_dao.weight);
             cmd.Parameters.AddWithValue("color", bagg_dao.color_id);
-            cmd.Parameters.AddWithValue("cost", bagg_dao.cost);
             cmd.Parameters.AddWithValue("user", bagg_dao.user_id);
+            cmd.Parameters.AddWithValue("cost", bagg_dao.cost);
 
             int result = cmd.ExecuteNonQuery();
 
@@ -369,12 +369,8 @@ namespace TABAS_API.Objects
             string query = "INSERT INTO BAGCART_TO_FLIGHT VALUES (@flid, @bgid, @seal)";
             NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
 
-            int id = SQLHelper.GetBrandID(fl_bagcart.bg_brand);
-
-            System.Diagnostics.Debug.WriteLine("BG ID: " + id);
-
             cmd.Parameters.AddWithValue("flid", fl_bagcart.flight_id);
-            cmd.Parameters.AddWithValue("bgid", id);
+            cmd.Parameters.AddWithValue("bgid", fl_bagcart.bagcart_id);
             cmd.Parameters.AddWithValue("seal", "X");
 
             int result = cmd.ExecuteNonQuery();
@@ -444,34 +440,62 @@ namespace TABAS_API.Objects
             return result;
         }
 
+        /// <summary>
+        /// Devuelve una lista de ids de los bagcarts existentes.
+        /// </summary>
+        /// <returns>La lista de bagcarts.</returns>
         public static string GetBagcarts()
         {
-            /*NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
             conn.Open();
 
-            string query = "SELECT brand FROM BAGCART WHERE LENGTH(seal) = @len";
+            string query = "SELECT bagcart_id FROM BAGCART";
             NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
 
-            cmd.Parameters.AddWithValue("len", 1);
+            List<int> bagcarts = new List<int>();
+
+            string result = JSONHandler.BuildMsg(0, MessageHandler.ResourceNotFound("Bagcarts"));
+
+            using (NpgsqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    while (reader.Read()) bagcarts.Add(reader.GetInt32(0));
+                    result = JSONHandler.BuildListIntResult("bagcarts", bagcarts);
+                }
+            }
+            cmd.Dispose();
+            conn.Close();
+            return result; 
+        }
+
+        /// <summary>
+        /// Obtiene una lista de maletas que han sido chequeadas pero no han sido asignadas a ningún vuelo.
+        /// </summary>
+        /// <returns>La lista de maletas sin asignar</returns>
+        public static string GetUnassignedBaggage()
+        {
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            conn.Open();
+
+            string query = "SELECT suitcase_id FROM SUITCASE_CHECK WHERE NOT EXISTS (SELECT FROM BAG_TO_SECTION WHERE suitcase_id = SUITCASE_CHECK.suitcase_id)";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
 
             List<int> flights = new List<int>();
 
-            string result = JSONHandler.BuildMsg(0, MessageHandler.ResourceNotFound("Active Flights"));
+            string result = JSONHandler.BuildMsg(0, MessageHandler.ResourceNotFound("Unassigned Baggage"));
 
             using (NpgsqlDataReader reader = cmd.ExecuteReader())
             {
                 if (reader.HasRows)
                 {
                     while (reader.Read()) flights.Add(reader.GetInt32(0));
-                    result = JSONHandler.BuildListIntResult("flights", flights);
+                    result = JSONHandler.BuildListIntResult("suitcases", flights);
                 }
             }
             cmd.Dispose();
             conn.Close();
-            return result;*/ 
-
-            // TODO: IMPLEMENT
-            return "";
+            return result;
         }
 
         /// <summary>

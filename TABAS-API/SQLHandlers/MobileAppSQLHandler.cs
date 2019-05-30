@@ -15,15 +15,15 @@ namespace TABAS_API.SQLHandlers
     public class MobileAppSQLHandler
     {
         /// <summary>
-        /// Obtiene una lista de los ids de todas las maletas.
+        /// Obtiene una lista de los ids de todas las maletas que no han sido chequeadas
         /// </summary>
         /// <returns>Lista de id de maletas.</returns>
-        public static string GetAllBaggage()
+        public static string GetUncheckedBaggage()
         {
             NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
             conn.Open();
 
-            string query = "SELECT suitcase_id FROM SUITCASE";
+            string query = "SELECT suitcase_id FROM SUITCASE WHERE NOT EXISTS (SELECT FROM SUITCASE_CHECK WHERE suitcase_id = SUITCASE.suitcase_id)";
             NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
 
             List<int> baggs_id = new List<int>();
@@ -61,6 +61,8 @@ namespace TABAS_API.SQLHandlers
         public static string InsertScannedBaggage(ScannedBaggDTO scan_info)
         {
             NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            SqlConnection sconn = ConnectionHandler.GetSSMSConnection();
+            sconn.Open();
             conn.Open();
 
             string query = "INSERT INTO SUITCASE_CHECK (suitcase_id, user_id, status) VALUES (@suit_id, @user_id, @status)";
@@ -70,9 +72,12 @@ namespace TABAS_API.SQLHandlers
             cmd.Parameters.AddWithValue("user_id", SQLHelper.GetUserID(scan_info.username));
             cmd.Parameters.AddWithValue("status", scan_info.status);
 
-            if (scan_info.comment != null || !scan_info.comment.Equals(String.Empty))  cmd.Parameters.AddWithValue("comment", scan_info.comment);
+            if (scan_info.comment != null)  cmd.Parameters.AddWithValue("comment", scan_info.comment);
 
             int result = cmd.ExecuteNonQuery();
+
+            conn.Close();
+            sconn.Close();
 
             if (result == 1) return JSONHandler.BuildMsg(1, MessageHandler.SuccessMSG());
             else return JSONHandler.BuildMsg(0, MessageHandler.ErrorMSG());
@@ -116,6 +121,7 @@ namespace TABAS_API.SQLHandlers
             string result = JSONHandler.BuildMsg(0, MessageHandler.FullSection(bagg_section.section_id));
             if (!SQLHelper.IsSectionFull(bagg_section.section_id))
             {
+                
                 NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
                 conn.Open();
 

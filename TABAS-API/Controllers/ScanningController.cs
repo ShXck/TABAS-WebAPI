@@ -16,10 +16,10 @@ namespace TABAS_API.Controllers
         /// Obtiene la lista de maletas.
         /// </summary>
         /// <returns>El resultado de la acción.</returns>
-        [HttpGet, Route("tabas/baggage")]
-        public IHttpActionResult GetBaggageList()
+        [HttpGet, Route("tabas/baggage/unchecked")]
+        public IHttpActionResult GetUncheckedBaggageList()
         {
-            return Ok(MobileAppSQLHandler.GetAllBaggage());
+            return Ok(MobileAppSQLHandler.GetUncheckedBaggage());
         }
 
         /// <summary>

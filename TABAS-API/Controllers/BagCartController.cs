@@ -34,7 +34,7 @@ namespace TABAS_API.Controllers
         public IHttpActionResult GetBagCartBrands()
         {
             // NO JSON needed
-            return Ok(AdminSQLHandler.GetAllBagCartBrands()); // OUT JSON: {brands: [A,B,C,...]}
+            return Ok(AdminSQLHandler.GetAllBagCartBrands()); // OUTPUT JSON: {brands: [A,B,C,...]}
         }
 
         /// <summary>
@@ -53,9 +53,11 @@ namespace TABAS_API.Controllers
         /// Obtiene una lista de todos los bagcarts creados.
         /// </summary>
         /// <returns>El resultado de la acción.</returns>
+        [HttpGet, Route("tabas/bagcarts")]
         public IHttpActionResult GetBagcarts()
         {
-            return Ok(AdminSQLHandler.GetBagcarts()); // IMPLEMENTATION NOT COMPLETED;
+            // NO JSON NEEDED
+            return Ok(AdminSQLHandler.GetBagcarts()); // OUTPUT JSON: {"bagcarts": [1,2,3,...], "http_result": X}
         }
     }
 }
