@@ -115,13 +115,16 @@ namespace TABAS_API.SQLHandlers
             return result;
         }
 
-
+        /// <summary>
+        /// Asigna una maleta a una sección del avión correspondiente al vuelo.
+        /// </summary>
+        /// <param name="bagg_section">Las especificaciones de la inserción.</param>
+        /// <returns>El resultado de la acción.</returns>
         public static string AssignBaggageToSection(BagToSectionDTO bagg_section)
         {
             string result = JSONHandler.BuildMsg(0, MessageHandler.FullSection(bagg_section.section_id));
             if (!SQLHelper.IsSectionFull(bagg_section.section_id))
-            {
-                
+            {    
                 NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
                 conn.Open();
 
@@ -141,6 +144,64 @@ namespace TABAS_API.SQLHandlers
         }
 
         /// <summary>
+        /// Obtiene el nombre del usuario que escaneó la maleta.
+        /// </summary>
+        /// <param name="suitcase_id">El id de la maleta.</param>
+        /// <returns>El nombre del usuario que escaneo la maleta.</returns>
+        public static string GetCheckerUser(int suitcase_id)
+        {
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            conn.Open();
+
+            string query = "SELECT user_id FROM SUITCASE_CHECK WHERE suitcase_id = @sid";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("sid", suitcase_id);
+
+            int user_id = 0;
+
+            using (NpgsqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    if (reader.Read()) user_id = reader.GetInt32(0);
+                }
+            }
+            cmd.Dispose();
+            conn.Close();
+            return JSONHandler.BuildFullName(SQLHelper.GetUserFullName(user_id));
+        }
+
+        /// <summary>
+        /// Obtiene todas las maletas que han sido escaneadas.
+        /// </summary>
+        /// <returns>Lista de maletas escaneadas.</returns>
+        public static string GetAllScannedBaggage()
+        {
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            conn.Open();
+
+            string query = "SELECT suitcase_id FROM SUITCASE_CHECK";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            List<int> sections = new List<int>();
+
+            string result = JSONHandler.BuildMsg(0, MessageHandler.ResourceNotFound("baggage"));
+
+            using (NpgsqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    while (reader.Read()) sections.Add(reader.GetInt32(0));
+                    result = JSONHandler.BuildListIntResult("baggage", sections);
+                }
+            }
+            cmd.Dispose();
+            conn.Close();
+            return result;
+        }
+
+        /// <summary>
         /// Genera un resultado de escaneo basado en probabilidad.
         /// </summary>
         /// <returns>El resultado del escaneo.</returns>
@@ -153,9 +214,5 @@ namespace TABAS_API.SQLHandlers
 
             return true;
         }
-
-
-
-
     }
 }

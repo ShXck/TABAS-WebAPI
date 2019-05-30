@@ -102,5 +102,13 @@ namespace TABAS_API.Objects
             json["status"] = MessageHandler.ScanMessage(pass);
             return json.ToString();
         }
+
+        public static string BuildFullName(string user)
+        {
+            JObject json = new JObject();
+            json["http_result"] = 1;
+            json["user"] = user;
+            return json.ToString();
+        }
     }
 }

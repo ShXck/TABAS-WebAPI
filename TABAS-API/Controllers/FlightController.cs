@@ -90,15 +90,6 @@ namespace TABAS_API.Controllers
             return Ok(MobileAppSQLHandler.AssignBaggageToSection(JsonConvert.DeserializeObject<BagToSectionDTO>(data)));
         }
 
-        /// <summary>
-        /// Obtiene una lista de maletas que no han sido asignadas a vuelos.
-        /// </summary>
-        /// <returns>El resultado de la acción.</returns>
-        [HttpGet, Route("tabas/baggage/unassigned")]
-        public IHttpActionResult GetUnassignedBaggage()
-        {
-            // NO JSON NEEDED
-            return Ok(AdminSQLHandler.GetUnassignedBaggage());
-        }
+
     }
 }

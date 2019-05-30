@@ -384,5 +384,34 @@ namespace TABAS_API.SQLHandlers
             conn.Close();
             return exists;
         }
+
+        /// <summary>
+        /// Obtiene el nombre completo de un usuario.
+        /// </summary>
+        /// <param name="user_id">El id del usuario.</param>
+        /// <returns>El nombre completo del usuario.</returns>
+        public static string GetUserFullName(int user_id)
+        {
+            SqlConnection conn = ConnectionHandler.GetSSMSConnection();
+            string query = "SELECT full_name FROM [USER] WHERE user_id = @id";
+            conn.Open();
+            SqlCommand cmd = new SqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("id", user_id);
+
+            string result = "Unknown";
+
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    if(reader.Read()) result = reader.GetString(0);
+                }
+            }
+
+            cmd.Dispose();
+            conn.Close();
+            return result;
+        }
     }
 }

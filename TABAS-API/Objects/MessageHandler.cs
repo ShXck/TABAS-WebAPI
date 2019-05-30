@@ -83,5 +83,14 @@ namespace TABAS_API.Objects
         {
             return res + " already exists in the system.";
         }
+
+        /// <summary>
+        /// Muestra un mensaje que indica que no existe un usuario epecificado.
+        /// </summary>
+        /// <returns>El mensaje de error.</returns>
+        public static string UserNotFound()
+        {
+            return "User id does not match any user.";
+        }
     }
 }

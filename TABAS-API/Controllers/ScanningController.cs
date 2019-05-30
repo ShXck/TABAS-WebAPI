@@ -12,15 +12,6 @@ namespace TABAS_API.Controllers
 {
     public class ScanningController : ApiController
     {
-        /// <summary>
-        /// Obtiene la lista de maletas.
-        /// </summary>
-        /// <returns>El resultado de la acción.</returns>
-        [HttpGet, Route("tabas/baggage/unchecked")]
-        public IHttpActionResult GetUncheckedBaggageList()
-        {
-            return Ok(MobileAppSQLHandler.GetUncheckedBaggage());
-        }
 
         /// <summary>
         /// Simula el escaneo de una maleta.
@@ -48,10 +39,15 @@ namespace TABAS_API.Controllers
         public IHttpActionResult InsertScannedBaggage([FromBody] string bagg_details)
         {
             // JSON Expected: '{"suitcase_id":X, "username": "XXX", "status": "XXX", "comment": "XXXXX"}' if bagggage was rejected;
-                               // '{"suitcase_id":X, "username": "XXX", "status": "XXX"}' otherwise
+            // '{"suitcase_id":X, "username": "XXX", "status": "XXX"}' otherwise
             return Ok(MobileAppSQLHandler.InsertScannedBaggage(JsonConvert.DeserializeObject<ScannedBaggDTO>(bagg_details)));
         }
 
-        /// TODO: Asignar maleta a sección de avión en un vuelo.
+        [HttpGet, Route("tabas/suitcases/{suit_id}/user")]
+        public IHttpActionResult GetBaggageChecker([FromUri] int suit_id)
+        {
+            // NO JSON NEEDED
+            return Ok(MobileAppSQLHandler.GetCheckerUser(suit_id));  // OUTPUT JSON "{"http_result": 1,"user": "XXXX"}"
+        }
     }
 }
