@@ -103,11 +103,30 @@ namespace TABAS_API.Objects
             return json.ToString();
         }
 
+        /// <summary>
+        /// Construye un JSON con el nombre completo de un usuario.
+        /// </summary>
+        /// <param name="user">El nombre del usuario.</param>
+        /// <returns>JSON con el nombre del usuario.</returns>
         public static string BuildFullName(string user)
         {
             JObject json = new JObject();
             json["http_result"] = 1;
             json["user"] = user;
+            return json.ToString();
+        }
+
+        /// <summary>
+        /// Construye un JSON con el conteo de maletas de un usuario.
+        /// </summary>
+        /// <param name="user">El nombre del Usuario.</param>
+        /// <param name="count">El número de maletas del usuario.</param>
+        /// <returns>El JSON con el conteo.</returns>
+        public static string BuildBaggageCount(string user, int count)
+        {
+            JObject json = new JObject();
+            json["user"] = user;
+            json["count"] = count;
             return json.ToString();
         }
     }

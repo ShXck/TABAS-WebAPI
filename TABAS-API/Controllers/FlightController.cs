@@ -83,11 +83,28 @@ namespace TABAS_API.Controllers
             return Ok(MobileAppSQLHandler.GetFlightPlaneSections(flight)); // OUTPUT JSON: {"sections": [1,2,3,...], "http_result": X}
         }
 
+        /// <summary>
+        /// Asigna una maleta a una sección del avión correspondiente al vuelo.
+        /// </summary>
+        /// <param name="data">La información de maleta, avión, y vuelo.</param>
+        /// <returns>El resultado de la acción.</returns>
         [HttpPost, Route("tabas/section/assign")]
         public IHttpActionResult AssignBagToSection([FromBody] string data)
         {
             // JSON EXPECTED: {"flight_id": X, "section_id": X, "suitcase_id": X, "user_id": X}
             return Ok(MobileAppSQLHandler.AssignBaggageToSection(JsonConvert.DeserializeObject<BagToSectionDTO>(data)));
+        }
+
+        /// <summary>
+        /// Asigna o actualiza el avión de un vuelo existente.
+        /// </summary>
+        /// <param name="data">La información del vuelo y avión.</param>
+        /// <returns>El resultado de la acción.</returns>
+        [HttpPost, Route("tabas/flight/plane/assign")]
+        public IHttpActionResult AssignPlane([FromBody] string data)
+        {
+            // JSON EXPECTED: {"flight":X, "model": "XXXX"}
+            return Ok(AdminSQLHandler.AssignPlaneToFlight(JsonConvert.DeserializeObject<AssignPlaneDTO>(data)));
         }
 
 

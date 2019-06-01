@@ -20,7 +20,7 @@ namespace TABAS_API.Controllers
         [HttpPost, Route("tabas/signup")]
         public IHttpActionResult SignUp([FromBody] string data)
         {
-            // Expected JSON: {full_name: XX, email: XX@XX, phone_number: XX, username: XX, password: XX}}
+            // Expected JSON: {full_name: XX, email: XX@XX, phone_number: XX, username: XX, password: XX}
             return Ok(AdminSQLHandler.AdminSignUp(JsonConvert.DeserializeObject<Admin>(data)));
         }
 

@@ -192,6 +192,7 @@
     <Compile Include="Controllers\ScanningController.cs" />
     <Compile Include="Controllers\SignUpController.cs" />
     <Compile Include="DataObjects\Admin.cs" />
+    <Compile Include="DataObjects\AssignPlaneDTO.cs" />
     <Compile Include="DataObjects\BagCart.cs" />
     <Compile Include="DataObjects\BaggageDAO.cs" />
     <Compile Include="DataObjects\BaggageDTO.cs" />
@@ -243,6 +244,7 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
+    <None Include="Properties\PublishProfiles\TABAS-API - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />

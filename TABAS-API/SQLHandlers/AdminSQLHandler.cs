@@ -161,6 +161,7 @@ namespace TABAS_API.Objects
         /// <returns>El resultado de la acción.</returns>
         public static string InsertNewBaggage(BaggageDTO bagg_dto)
         {
+            /// TODO: AGREGAR IF(USEREXISTS)
             Tuple<int, int> ids = SQLHelper.GetBaggageIDs(bagg_dto);
 
             BaggageDAO bagg_dao = new BaggageDAO(ids.Item1, ids.Item2, bagg_dto.weight, (Decimal)bagg_dto.weight * (Decimal)605.0);
@@ -496,6 +497,34 @@ namespace TABAS_API.Objects
             cmd.Dispose();
             conn.Close();
             return result;
+        }
+
+        /// <summary>
+        /// Asigna un avión a un vuelo existente.
+        /// </summary>
+        /// <param name="plane_dto">Los datos del avión y el vuelo.</param>
+        /// <returns>El resultado de la actualización.</returns>
+        public static string AssignPlaneToFlight(AssignPlaneDTO plane_dto)
+        {
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            conn.Open();
+
+            string query = "UPDATE FLIGHT SET plane_id = @pid WHERE flight_id = @fid";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("pid", SQLHelper.GetPlaneID(plane_dto.model));
+            cmd.Parameters.AddWithValue("fid", plane_dto.flight);
+
+            int result = cmd.ExecuteNonQuery();
+
+
+            System.Diagnostics.Debug.WriteLine(result);
+
+            cmd.Dispose();
+            conn.Close();
+
+            if (result == 1) return JSONHandler.BuildMsg(1, MessageHandler.SuccessMSG());
+            else return JSONHandler.BuildMsg(0, MessageHandler.ErrorMSG());
         }
 
         /// <summary>

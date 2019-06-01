@@ -31,7 +31,7 @@ namespace TABAS_API.Objects
         /// <returns>Mensaje de error.</returns>
         public static string ErrorMSG()
         {
-            return "Task could be completed.";
+            return "Task could not be completed.";
         }
 
         /// <summary>
