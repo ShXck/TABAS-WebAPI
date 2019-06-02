@@ -22,5 +22,16 @@ namespace TABAS_API.Controllers
 
             // OUTPUT JSON "{"http_result": 1,"baggage": ["{"user": "NAME","count": X}",  "{"user": "NAME","count": X}", ...]}"
         }
+
+        /// <summary>
+        /// Obtiene los datos relacionados al equipaje en un vuelo.
+        /// </summary>
+        /// <returns>Tablas de datos de equipaje por vuelo</returns>
+        [HttpGet, Route("tabas/report/baggage/information/{flight}")]
+        public IHttpActionResult GetBaggageInformation([FromUri] int flight)
+        {
+            // NO JSON NEEDED.
+            return Ok(ReportSQLHandler.GetBaggageReport(flight)); // OUTPUT JSON: "{"http_result": 1,"flight": X,"model": "XXXX","weight": XXX.X,"total_suitcase": XXX,"suitcase_rejected": XX,"suitcase_acepted": XX}"
+        }
     }
 }

@@ -9,7 +9,6 @@ namespace TABAS_API.DataObjects
     {
         public int flight_id;
         public int suitcase_id;
-        public int user_id;
         public int section_id;
     }
 }

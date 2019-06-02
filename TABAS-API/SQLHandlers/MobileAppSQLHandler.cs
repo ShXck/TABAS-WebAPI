@@ -65,14 +65,15 @@ namespace TABAS_API.SQLHandlers
             sconn.Open();
             conn.Open();
 
-            string query = "INSERT INTO SUITCASE_CHECK (suitcase_id, user_id, status) VALUES (@suit_id, @user_id, @status)";
+            string query = "INSERT INTO SUITCASE_CHECK (suitcase_id, user_id, status, comment) VALUES (@suit_id, @user_id, @status, @comm)";
             NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
 
             cmd.Parameters.AddWithValue("suit_id", scan_info.suitcase_id);
             cmd.Parameters.AddWithValue("user_id", SQLHelper.GetUserID(scan_info.username));
             cmd.Parameters.AddWithValue("status", scan_info.status);
 
-            if (scan_info.comment != null)  cmd.Parameters.AddWithValue("comment", scan_info.comment);
+            if (scan_info.status.Equals("Rejected")) cmd.Parameters.AddWithValue("comm", scan_info.comment);
+            else cmd.Parameters.AddWithValue("comm", "x");
 
             int result = cmd.ExecuteNonQuery();
 
@@ -136,6 +137,9 @@ namespace TABAS_API.SQLHandlers
                 cmd.Parameters.AddWithValue("suitid", bagg_section.suitcase_id);
 
                 int q_result = cmd.ExecuteNonQuery();
+
+                conn.Close();
+                cmd.Dispose();
 
                 if (q_result == 1) return JSONHandler.BuildMsg(1, MessageHandler.SuccessMSG());
                 else return JSONHandler.BuildMsg(0, MessageHandler.ErrorMSG());

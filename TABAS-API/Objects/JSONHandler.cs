@@ -129,5 +129,30 @@ namespace TABAS_API.Objects
             json["count"] = count;
             return json.ToString();
         }
+
+        /// <summary>
+        /// Crea un JSON array específico para el reporte de maletas.
+        /// </summary>
+        /// /// <param name="flight">Identificador del vuelo.</param>
+        /// <param name="model">Modelo del avión asignado al vuelo.</param>
+        /// <param name="weight">Peso en equipaje máximo del vuelo.</param>
+        /// <param name="total_suitcase">Maletas totales.</param>
+        /// <param name="suitcase_rejected">Maletas rechazadas.</param>
+        /// <param name="suitcase_acepted">Maletas en el avión.</param>
+        /// <returns>El JSON con la información.</returns>
+        public static string BuildBaggageReport(int flight, string model, double weight, int total_suitcase,
+            int suitcase_rejected, int suitcase_acepted)
+        {
+            JObject result = new JObject();
+            result["http_result"] = 1;
+            result["flight"] = flight;
+            result["model"] = model;
+            result["weight"] = weight;
+            result["total_suitcase"] = total_suitcase;
+            result["suitcase_rejected"] = suitcase_rejected;
+            result["suitcase_acepted"] = suitcase_acepted;
+
+            return result.ToString();
+        }
     }
 }

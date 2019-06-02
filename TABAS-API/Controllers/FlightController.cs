@@ -91,7 +91,7 @@ namespace TABAS_API.Controllers
         [HttpPost, Route("tabas/section/assign")]
         public IHttpActionResult AssignBagToSection([FromBody] string data)
         {
-            // JSON EXPECTED: {"flight_id": X, "section_id": X, "suitcase_id": X, "user_id": X}
+            // JSON EXPECTED: {"flight_id": X, "section_id": X, "suitcase_id": X}
             return Ok(MobileAppSQLHandler.AssignBaggageToSection(JsonConvert.DeserializeObject<BagToSectionDTO>(data)));
         }
 

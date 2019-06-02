@@ -43,6 +43,11 @@ namespace TABAS_API.Controllers
             return Ok(MobileAppSQLHandler.InsertScannedBaggage(JsonConvert.DeserializeObject<ScannedBaggDTO>(bagg_details)));
         }
 
+        /// <summary>
+        /// Obtiene el nombre de la persona que escaneo una maleta específica.
+        /// </summary>
+        /// <param name="suit_id">El id de la maleta.</param>
+        /// <returns>El resultado de la acción.</returns>
         [HttpGet, Route("tabas/suitcases/{suit_id}/user")]
         public IHttpActionResult GetBaggageChecker([FromUri] int suit_id)
         {

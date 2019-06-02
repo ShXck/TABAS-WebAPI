@@ -413,5 +413,67 @@ namespace TABAS_API.SQLHandlers
             conn.Close();
             return result;
         }
+
+        /// <summary>
+        /// Obtiene el módelo del avión asignado a un vuelo.
+        /// </summary>
+        /// <param name="flight">el id del vuelo.</param>
+        /// <returns>String con el modelo del avión.</returns>
+        public static string GetPlaneModel(int flight)
+        {
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            conn.Open();
+
+            string query = "SELECT model FROM AIRPLANE WHERE(plane_id = (SELECT plane_id FROM FLIGHT WHERE(flight_id = @flight)))";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("flight", flight);
+
+            string model = "";
+
+            using (NpgsqlDataReader reader = cmd.ExecuteReader())
+            {
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        model = reader.GetString(0);
+                    }
+                }
+            }
+            cmd.Dispose();
+            conn.Close();
+            return model;
+        }
+
+        /// <summary>
+        /// Obtiene el peso máximo de un avión.
+        /// </summary>
+        /// <param name="flight">El identificador del vuelo.</param>
+        /// <returns>El peso máximo del avión.</returns>
+        public static double GetMaxWeight(int flight)
+        {
+            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            conn.Open();
+
+            string query = "SELECT weight FROM AIRPLANE_SECTION WHERE plane_id = @plane";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("plane", SQLHelper.GetPlaneIDByFlight(flight));
+
+            double weight = 0;
+
+            using (NpgsqlDataReader reader = cmd.ExecuteReader())
+            {
+
+                while (reader.Read())
+                {
+                    weight += reader.GetDouble(0);
+                }
+            }
+            cmd.Dispose();
+            conn.Close();
+            return weight;
+        }
     }
 }
