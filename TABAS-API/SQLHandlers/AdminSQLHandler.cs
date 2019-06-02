@@ -46,7 +46,7 @@ namespace TABAS_API.Objects
 
         public static string GetAllRoles()
         {
-            SqlConnection conn = ConnectionHandler.GetSSMSConnection();
+            SqlConnection conn = new SqlConnection(ConnectionHandler.GetSSMSString());
             conn.Open();
 
             string query = "SELECT role from ROLE";
@@ -78,7 +78,7 @@ namespace TABAS_API.Objects
         /// <returns>El resultado de la acción.</returns>
         public static string AssignUserRoles(string username, List<string> roles)
         {
-            SqlConnection conn = ConnectionHandler.GetSSMSConnection();
+            SqlConnection conn = new SqlConnection(ConnectionHandler.GetSSMSString());
 
             conn.Open();
             

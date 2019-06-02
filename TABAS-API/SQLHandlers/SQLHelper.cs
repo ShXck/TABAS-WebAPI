@@ -18,7 +18,7 @@ namespace TABAS_API.SQLHandlers
         /// <returns>Si el usuario existe o no.</returns>
         public static bool UserExists(string username, string email, string phone)
         {
-            SqlConnection conn = ConnectionHandler.GetSSMSConnection();
+            SqlConnection conn = new SqlConnection(ConnectionHandler.GetSSMSString());
             string query = "SELECT user_id FROM [USER] WHERE username = @user OR email = @email OR phone_number = @phone";
             conn.Open();
             SqlCommand cmd = new SqlCommand(query, conn);
@@ -46,7 +46,8 @@ namespace TABAS_API.SQLHandlers
         /// <returns>El user_id</returns>
         public static int GetUserID(string username)
         {
-            SqlConnection conn = ConnectionHandler.GetSSMSConnection();
+            SqlConnection conn = new SqlConnection(ConnectionHandler.GetSSMSString());
+            conn.Open();
 
             string query = "SELECT user_id FROM [USER] WHERE username = @us";
             
@@ -63,6 +64,8 @@ namespace TABAS_API.SQLHandlers
                     if (reader.Read()) user_id = reader.GetInt32(0);
                 }
             }
+
+            conn.Close();
             return user_id;           
         }
 
@@ -73,7 +76,8 @@ namespace TABAS_API.SQLHandlers
         /// <returns>El id del role.</returns>
         public static int GetRoleID(string role_name)
         {
-            SqlConnection conn = ConnectionHandler.GetSSMSConnection();
+            SqlConnection conn = new SqlConnection(ConnectionHandler.GetSSMSString()); ;
+            conn.Open();
             
             string query = "SELECT role_id FROM ROLE WHERE role = @role";
             int role_id = -1;
@@ -90,6 +94,7 @@ namespace TABAS_API.SQLHandlers
                     }
                 }
             }
+            conn.Close();
             return role_id;           
         }
 
@@ -101,7 +106,7 @@ namespace TABAS_API.SQLHandlers
         public static Tuple<int, int> GetBaggageIDs(BaggageDTO bag_dto)
         {
             NpgsqlConnection pconn = ConnectionHandler.GetPGConnection();
-            SqlConnection sconn = ConnectionHandler.GetSSMSConnection();
+            SqlConnection sconn = new SqlConnection(ConnectionHandler.GetSSMSString());
 
             sconn.Open();
             pconn.Open();
@@ -392,7 +397,7 @@ namespace TABAS_API.SQLHandlers
         /// <returns>El nombre completo del usuario.</returns>
         public static string GetUserFullName(int user_id)
         {
-            SqlConnection conn = ConnectionHandler.GetSSMSConnection();
+            SqlConnection conn = new SqlConnection(ConnectionHandler.GetSSMSString()); ;
             string query = "SELECT full_name FROM [USER] WHERE user_id = @id";
             conn.Open();
             SqlCommand cmd = new SqlCommand(query, conn);

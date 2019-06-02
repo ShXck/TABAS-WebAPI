@@ -27,5 +27,10 @@ namespace TABAS_API.Objects
         {
             return npgsql_conn;
         }
+
+        public static string GetSSMSString()
+        {
+            return sql_str;
+        }
     }
 }
