@@ -102,7 +102,7 @@ namespace TABAS_API.Objects
         /// <returns>El resultado de la acción.</returns>
         public static string UserLogin(LoginDTO admin)
         {
-            SqlConnection conn = ConnectionHandler.GetSSMSConnection();
+            SqlConnection conn = new SqlConnection(ConnectionHandler.GetSSMSString());
             conn.Open();
 
             string query = "SELECT username, password, role FROM [USER] JOIN ([USER_ROLE] JOIN [ROLE] ON [USER_ROLE].role_id = [ROLE].role_id) ON [USER].user_id = [USER_ROLE].user_id WHERE username = @user AND password = @password AND role = @role";
