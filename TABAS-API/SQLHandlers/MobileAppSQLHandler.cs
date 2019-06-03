@@ -20,7 +20,7 @@ namespace TABAS_API.SQLHandlers
         /// <returns>Lista de id de maletas.</returns>
         public static string GetUncheckedBaggage()
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString()); ;
             conn.Open();
 
             string query = "SELECT suitcase_id FROM SUITCASE WHERE NOT EXISTS (SELECT FROM SUITCASE_CHECK WHERE suitcase_id = SUITCASE.suitcase_id)";
@@ -60,8 +60,8 @@ namespace TABAS_API.SQLHandlers
         /// <returns>El resultado de la acción.</returns>
         public static string InsertScannedBaggage(ScannedBaggDTO scan_info)
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
-            SqlConnection sconn = ConnectionHandler.GetSSMSConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString()); ;
+            SqlConnection sconn = new SqlConnection(ConnectionHandler.GetSSMSString()); ;
             sconn.Open();
             conn.Open();
 
@@ -91,7 +91,7 @@ namespace TABAS_API.SQLHandlers
         /// <returns>La lista con las secciones.</returns>
         public static string GetFlightPlaneSections(int flight)
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString()); ;
             conn.Open();
 
             string query = "SELECT section_id FROM AIRPLANE_SECTION WHERE plane_id = @plane";
@@ -126,7 +126,7 @@ namespace TABAS_API.SQLHandlers
             string result = JSONHandler.BuildMsg(0, MessageHandler.FullSection(bagg_section.section_id));
             if (!SQLHelper.IsSectionFull(bagg_section.section_id))
             {    
-                NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+                NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString()); ;
                 conn.Open();
 
                 string query = "INSERT INTO BAG_TO_SECTION VALUES (@fid, @secid, @suitid)";
@@ -154,7 +154,7 @@ namespace TABAS_API.SQLHandlers
         /// <returns>El nombre del usuario que escaneo la maleta.</returns>
         public static string GetCheckerUser(int suitcase_id)
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString()); ;
             conn.Open();
 
             string query = "SELECT user_id FROM SUITCASE_CHECK WHERE suitcase_id = @sid";
@@ -182,7 +182,7 @@ namespace TABAS_API.SQLHandlers
         /// <returns>Lista de maletas escaneadas.</returns>
         public static string GetAllScannedBaggage()
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString()); ;
             conn.Open();
 
             string query = "SELECT suitcase_id FROM SUITCASE_CHECK";

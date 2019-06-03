@@ -32,7 +32,7 @@ namespace TABAS_API.Controllers
             return Ok(AdminSQLHandler.InsertNewBaggage(JsonConvert.DeserializeObject<BaggageDTO>(bagg_data)));
         }
 
-        /// <summary>
+        /// <summary>33
         /// Obtiene una lista de maletas que han sido escaneadas, pero no han sido asignadas a vuelos.
         /// </summary>
         /// <returns>El resultado de la acción.</returns>

@@ -22,24 +22,28 @@ namespace TABAS_API.Objects
         {
             if (!SQLHelper.UserExists(admin.username, admin.email, admin.phone_number))
             {
-                using (SqlConnection conn = ConnectionHandler.GetSSMSConnection())
+                SqlConnection conn = new SqlConnection(ConnectionHandler.GetSSMSString());
+                
+                string query = "INSERT INTO [USER] VALUES(@name, @phone, @email, @user, @pass)";
+                using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    string query = "INSERT INTO [USER] VALUES(@name, @phone, @email, @user, @pass)";
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    conn.Open();
+                    cmd.Parameters.AddWithValue("name", admin.full_name);
+                    cmd.Parameters.AddWithValue("phone", admin.phone_number);
+                    cmd.Parameters.AddWithValue("email", admin.email);
+                    cmd.Parameters.AddWithValue("user", admin.username);
+                    cmd.Parameters.AddWithValue("pass", Cipher.Encrypt(admin.password));
+
+                    int query_result = cmd.ExecuteNonQuery();
+
+                    if (query_result == 1)
                     {
-                        conn.Open();
-                        cmd.Parameters.AddWithValue("name", admin.full_name);
-                        cmd.Parameters.AddWithValue("phone", admin.phone_number);
-                        cmd.Parameters.AddWithValue("email", admin.email);
-                        cmd.Parameters.AddWithValue("user", admin.username);
-                        cmd.Parameters.AddWithValue("pass", Cipher.Encrypt(admin.password));
-
-                        int query_result = cmd.ExecuteNonQuery();
-
-                        if (query_result == 1) return JSONHandler.BuildMsg(1, MessageHandler.SuccessMSG());
+                        conn.Close();
+                        return JSONHandler.BuildMsg(1, MessageHandler.SuccessMSG());
                     }
-                    return JSONHandler.BuildMsg(0, MessageHandler.ErrorMSG());
                 }
+                return JSONHandler.BuildMsg(0, MessageHandler.ErrorMSG());
+                
             }
             return JSONHandler.BuildMsg(1, MessageHandler.UserExistsMSG());
         }
@@ -131,7 +135,7 @@ namespace TABAS_API.Objects
         /// <returns>La lista de colores en la base de datos.</returns>
         public static string GetColors()
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString()); 
             conn.Open();
 
             string query = "SELECT color_name FROM color";
@@ -166,7 +170,7 @@ namespace TABAS_API.Objects
 
             BaggageDAO bagg_dao = new BaggageDAO(ids.Item1, ids.Item2, bagg_dto.weight, (Decimal)bagg_dto.weight * (Decimal)605.0);
 
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString()); 
             conn.Open();
 
             string query = "INSERT INTO SUITCASE (weight, color_id, user_id, cost) VALUES (@weight, @color, @user, @cost)";
@@ -196,7 +200,7 @@ namespace TABAS_API.Objects
         {
             if (!SQLHelper.BagcartExists(cart))
             {
-                NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+                NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString()); 
                 conn.Open();
 
                 string query = "INSERT INTO BAGCART (brand_id, year, capacity) VALUES(@id, @year, @cap)";
@@ -228,7 +232,7 @@ namespace TABAS_API.Objects
         {
             if (!SQLHelper.BrandExists(cart.brand))
             {
-                NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+                NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString()); 
                 conn.Open();
 
                 string query = "INSERT INTO BAGCART_BRAND (brand) VALUES(@brand)";
@@ -254,7 +258,7 @@ namespace TABAS_API.Objects
         /// <returns>El resultado de la acción.</returns>
         public static string GetAllBagCartBrands()
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString()); 
             conn.Open();
 
             string query = "SELECT brand FROM BAGCART_BRAND";
@@ -284,7 +288,7 @@ namespace TABAS_API.Objects
         /// <returns></returns>
         public static string CreateNewFlight(FlightDTO flight)
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString()); 
             conn.Open();
 
             string query = "INSERT INTO FLIGHT (plane_id) VALUES(@plane)";
@@ -305,7 +309,7 @@ namespace TABAS_API.Objects
         /// <returns>El resultado de la acción.</returns>
         public static string GetAllPlanes()
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString()); 
             conn.Open();
 
             string query = "SELECT model FROM AIRPLANE";
@@ -334,7 +338,7 @@ namespace TABAS_API.Objects
         /// <returns>La lista de los vuelos.</returns>
         public static string GetUnassignedFlights()
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString()); 
             conn.Open();
 
             string query = "SELECT flight_id FROM FLIGHT WHERE  NOT EXISTS (SELECT FROM BAGCART_TO_FLIGHT WHERE  flight_id = FLIGHT.flight_id)";
@@ -364,7 +368,7 @@ namespace TABAS_API.Objects
         /// <returns></returns>
         public static string AssignBagcart(FlightBagCartDTO fl_bagcart)
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString()); 
             conn.Open();
 
             string query = "INSERT INTO BAGCART_TO_FLIGHT VALUES (@flid, @bgid, @seal)";
@@ -392,7 +396,7 @@ namespace TABAS_API.Objects
         {
             string sec_seal = GetNewSecuritySeal();
 
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString()); 
             conn.Open();
 
             string query = "UPDATE BAGCART_TO_FLIGHT SET seal = @seal WHERE flight_id = @flight";
@@ -416,7 +420,7 @@ namespace TABAS_API.Objects
         /// <returns>La lista de vuelos activos.</returns>
         public static string GetAllActiveFlights()
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString()); 
             conn.Open();
 
             string query = "SELECT flight_id FROM BAGCART_TO_FLIGHT WHERE LENGTH(seal) = @len";
@@ -447,7 +451,7 @@ namespace TABAS_API.Objects
         /// <returns>La lista de bagcarts.</returns>
         public static string GetBagcarts()
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString()); 
             conn.Open();
 
             string query = "SELECT bagcart_id FROM BAGCART";
@@ -476,7 +480,7 @@ namespace TABAS_API.Objects
         /// <returns>La lista de maletas sin asignar</returns>
         public static string GetUnassignedBaggage()
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString()); 
             conn.Open();
 
             string query = "SELECT suitcase_id FROM SUITCASE_CHECK WHERE NOT EXISTS (SELECT FROM BAG_TO_SECTION WHERE suitcase_id = SUITCASE_CHECK.suitcase_id)";
@@ -506,7 +510,7 @@ namespace TABAS_API.Objects
         /// <returns>El resultado de la actualización.</returns>
         public static string AssignPlaneToFlight(AssignPlaneDTO plane_dto)
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString()); 
             conn.Open();
 
             string query = "UPDATE FLIGHT SET plane_id = @pid WHERE flight_id = @fid";

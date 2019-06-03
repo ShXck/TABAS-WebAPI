@@ -105,7 +105,7 @@ namespace TABAS_API.SQLHandlers
         /// <returns>Una tupla de la forma (user_id, color_id)</returns>
         public static Tuple<int, int> GetBaggageIDs(BaggageDTO bag_dto)
         {
-            NpgsqlConnection pconn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection pconn = new NpgsqlConnection(ConnectionHandler.GetPGString());
             SqlConnection sconn = new SqlConnection(ConnectionHandler.GetSSMSString());
 
             sconn.Open();
@@ -141,7 +141,8 @@ namespace TABAS_API.SQLHandlers
         /// <returns>El id de la marca.</returns>
         public static int GetBrandID(string brand)
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString());
+            conn.Open();
 
             string query = "SELECT brand_id FROM BAGCART_BRAND WHERE brand = @brand";
             NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
@@ -154,6 +155,7 @@ namespace TABAS_API.SQLHandlers
             {
                 if (reader.Read()) b_id = reader.GetInt32(0);
             }
+            conn.Close();
             return b_id;
         }
 
@@ -164,7 +166,8 @@ namespace TABAS_API.SQLHandlers
         /// <returns>El id del modelo.</returns>
         public static int GetPlaneID(string model)
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString());
+            conn.Open();
 
             string query = "SELECT plane_id FROM AIRPLANE WHERE model = @model";
             NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
@@ -177,6 +180,7 @@ namespace TABAS_API.SQLHandlers
             {
                 if (reader.Read()) plane_id = reader.GetInt32(0);
             }
+            conn.Close();
             return plane_id;
         }
 
@@ -187,7 +191,8 @@ namespace TABAS_API.SQLHandlers
         /// <returns>El id del usuario.</returns>
         public static int GetUserIdBySuitcase(int suit_id)
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString());
+            conn.Open();
 
             string query = "SELECT user_id FROM SUITCASE WHERE suitcase_id = @id";
             NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
@@ -200,6 +205,7 @@ namespace TABAS_API.SQLHandlers
             {
                 if (reader.Read()) user_id = reader.GetInt32(0);
             }
+            conn.Close();
             return user_id;
         }
 
@@ -210,7 +216,7 @@ namespace TABAS_API.SQLHandlers
         /// <returns>El id del avión.</returns>
         public static int GetPlaneIDByFlight(int flid)
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString());
 
             string query = "SELECT plane_id FROM FLIGHT WHERE flight_id = @id";
             NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
@@ -223,6 +229,7 @@ namespace TABAS_API.SQLHandlers
             {
                 if (reader.Read()) pl_id = reader.GetInt32(0);
             }
+            conn.Close();
             return pl_id;
         }
 
@@ -233,7 +240,8 @@ namespace TABAS_API.SQLHandlers
         /// <returns>La capacidad el bagcart.</returns>
         public static int GetBagcartCapacity(string brand)
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString());
+            conn.Open();
 
             string query = "SELECT capacity FROM BAGCART WHERE brand_if = @id";
             NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
@@ -246,6 +254,7 @@ namespace TABAS_API.SQLHandlers
             {
                 if (reader.Read()) capacity = reader.GetInt32(0);
             }
+            conn.Open();
             return capacity;
         }
 
@@ -256,7 +265,8 @@ namespace TABAS_API.SQLHandlers
         /// <returns>El peso de la maleta.</returns>
         public static double GetBaggageWeight(int suit_id)
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString());
+            conn.Open();
 
             string query = "SELECT weight FROM SUITCASE WHERE suitcase_id = @id";
             NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
@@ -269,6 +279,7 @@ namespace TABAS_API.SQLHandlers
             {
                 if (reader.Read()) weight = reader.GetDouble(0);
             }
+            conn.Close();
             return weight;
         }
 
@@ -279,7 +290,7 @@ namespace TABAS_API.SQLHandlers
         /// <returns>Si está lleno o no.</returns>
         public static bool IsSectionFull(int sec_id)
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString());
             conn.Open();
 
             string query = "SELECT suitcase_id FROM BAG_TO_SECTION WHERE section_id = @id";
@@ -317,7 +328,8 @@ namespace TABAS_API.SQLHandlers
         /// <returns>El peso máximo de la sección.</returns>
         private static double GetSectionMaxWeight(int sec_id)
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString());
+            conn.Open();
 
             string query = "SELECT weight FROM AIRPLANE_SECTION WHERE section_id = @id";
             NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
@@ -333,6 +345,7 @@ namespace TABAS_API.SQLHandlers
                     weight = reader.GetDouble(0);
                 }
             }
+            conn.Close();
             return weight;
         }
 
@@ -343,7 +356,7 @@ namespace TABAS_API.SQLHandlers
         /// <returns>Si ya existe el bagcart o no.</returns>
         public static bool BagcartExists(BagCart bagcart)
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString());
             conn.Open();
 
             string query = "SELECT brand_id, year, capacity FROM BAGCART WHERE brand_id = @id and year = @year and capacity = @cap";
@@ -371,7 +384,7 @@ namespace TABAS_API.SQLHandlers
         /// <returns>Si la marca existe o no.</returns>
         public static bool BrandExists(string brand)
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString());
             conn.Open();
 
             string query = "SELECT brand FROM BAGCART_BRAND WHERE brand = @brand";
@@ -426,7 +439,7 @@ namespace TABAS_API.SQLHandlers
         /// <returns>String con el modelo del avión.</returns>
         public static string GetPlaneModel(int flight)
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString());
             conn.Open();
 
             string query = "SELECT model FROM AIRPLANE WHERE(plane_id = (SELECT plane_id FROM FLIGHT WHERE(flight_id = @flight)))";
@@ -458,7 +471,7 @@ namespace TABAS_API.SQLHandlers
         /// <returns>El peso máximo del avión.</returns>
         public static double GetMaxWeight(int flight)
         {
-            NpgsqlConnection conn = ConnectionHandler.GetPGConnection();
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString());
             conn.Open();
 
             string query = "SELECT weight FROM AIRPLANE_SECTION WHERE plane_id = @plane";

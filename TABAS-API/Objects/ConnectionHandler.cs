@@ -32,5 +32,10 @@ namespace TABAS_API.Objects
         {
             return sql_str;
         }
+
+        public static string GetPGString()
+        {
+            return npgsql_str;
+        }
     }
 }
