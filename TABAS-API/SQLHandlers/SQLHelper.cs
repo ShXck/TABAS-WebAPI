@@ -217,6 +217,7 @@ namespace TABAS_API.SQLHandlers
         public static int GetPlaneIDByFlight(int flid)
         {
             NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString());
+            conn.Open();
 
             string query = "SELECT plane_id FROM FLIGHT WHERE flight_id = @id";
             NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
@@ -254,7 +255,7 @@ namespace TABAS_API.SQLHandlers
             {
                 if (reader.Read()) capacity = reader.GetInt32(0);
             }
-            conn.Open();
+            conn.Close();
             return capacity;
         }
 
