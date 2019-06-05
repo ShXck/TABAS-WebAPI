@@ -494,5 +494,32 @@ namespace TABAS_API.SQLHandlers
             conn.Close();
             return weight;
         }
+
+        /// <summary>
+        /// Obtiene la id de un color.
+        /// </summary>
+        /// <param name="color">El nombre del color.</param>
+        /// <returns>El id del color.</returns>
+        public static int GetColorID(string color)
+        {
+            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString());
+            conn.Open();
+
+            string query = "SELECT color_id FROM COLOR WHERE color_name = @col";
+            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("col", color);
+
+            int id = 0;
+
+            using (NpgsqlDataReader reader = cmd.ExecuteReader())
+            {
+
+                if (reader.Read()) id = reader.GetInt32(0);
+            }
+            cmd.Dispose();
+            conn.Close();
+            return id;
+        }
     }
 }
