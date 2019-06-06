@@ -45,7 +45,7 @@ namespace TABAS_API.Objects
                 return JSONHandler.BuildMsg(0, MessageHandler.ErrorMSG());
                 
             }
-            return JSONHandler.BuildMsg(1, MessageHandler.UserExistsMSG());
+            return JSONHandler.BuildMsg(0, MessageHandler.UserExistsMSG());
         }
 
         public static string GetAllRoles()
@@ -165,30 +165,33 @@ namespace TABAS_API.Objects
         /// <returns>El resultado de la acción.</returns>
         public static string InsertNewBaggage(BaggageDTO bagg_dto)
         {
-            /// TODO: AGREGAR IF(USEREXISTS)
-            Tuple<int, int> ids = SQLHelper.GetBaggageIDs(bagg_dto);
+            if (SQLHelper.UserExists(bagg_dto.username, "x", "x"))
+            {
+                Tuple<int, int> ids = SQLHelper.GetBaggageIDs(bagg_dto);
 
-            BaggageDAO bagg_dao = new BaggageDAO(ids.Item1, ids.Item2, bagg_dto.weight, (Decimal)bagg_dto.weight * (Decimal)605.0);
+                BaggageDAO bagg_dao = new BaggageDAO(ids.Item1, ids.Item2, bagg_dto.weight, (Decimal)bagg_dto.weight * (Decimal)605.0);
 
-            NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString()); 
-            conn.Open();
+                NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString());
+                conn.Open();
 
-            string query = "INSERT INTO SUITCASE (weight, color_id, user_id, cost) VALUES (@weight, @color, @user, @cost)";
-            NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
+                string query = "INSERT INTO SUITCASE (weight, color_id, user_id, cost) VALUES (@weight, @color, @user, @cost)";
+                NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
 
-            cmd.Parameters.AddWithValue("weight", bagg_dao.weight);
-            cmd.Parameters.AddWithValue("color", bagg_dao.color_id);
-            cmd.Parameters.AddWithValue("user", bagg_dao.user_id);
-            cmd.Parameters.AddWithValue("cost", bagg_dao.cost);
+                cmd.Parameters.AddWithValue("weight", bagg_dao.weight);
+                cmd.Parameters.AddWithValue("color", bagg_dao.color_id);
+                cmd.Parameters.AddWithValue("user", bagg_dao.user_id);
+                cmd.Parameters.AddWithValue("cost", bagg_dao.cost);
 
-            int result = cmd.ExecuteNonQuery();
+                int result = cmd.ExecuteNonQuery();
 
-            cmd.Dispose();
-            conn.Close();
+                cmd.Dispose();
+                conn.Close();
 
-            if (result == 1) return JSONHandler.BuildMsg(1, MessageHandler.SuccessMSG());
+                if (result == 1) return JSONHandler.BuildMsg(1, MessageHandler.SuccessMSG());
 
-            return JSONHandler.BuildMsg(0, MessageHandler.ErrorMSG());
+                return JSONHandler.BuildMsg(0, MessageHandler.ErrorMSG());
+            }
+            return JSONHandler.BuildMsg(0, MessageHandler.ResourceNotFound("user"));
         }
 
         /// <summary>
