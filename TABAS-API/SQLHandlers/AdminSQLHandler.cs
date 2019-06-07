@@ -173,7 +173,6 @@ namespace TABAS_API.Objects
 
                 NpgsqlConnection conn = new NpgsqlConnection(ConnectionHandler.GetPGString());
                 conn.Open();
-
                 string query = "INSERT INTO SUITCASE (weight, color_id, user_id, cost) VALUES (@weight, @color, @user, @cost)";
                 NpgsqlCommand cmd = new NpgsqlCommand(query, conn);
 

@@ -15,7 +15,7 @@ namespace TABAS_API.Controllers
         /// </summary>
         /// <param name="model">El modelo a eliminar.</param>
         /// <returns>El resultado de la acción.</returns>
-        [HttpDelete, Route("tabas/delete/airplane/{model}")]
+        [HttpPost, Route("tabas/delete/airplane/{model}")]
         public IHttpActionResult DeleteAirplane([FromUri] string model)
         {
             // NO JSON NEEDED.
@@ -27,7 +27,7 @@ namespace TABAS_API.Controllers
         /// </summary>
         /// <param name="model">El modelo a eliminar.</param>
         /// <returns>El resultado de la acción.</returns>
-        [HttpDelete, Route("tabas/delete/bagcart/{id}")]
+        [HttpPost, Route("tabas/delete/bagcart/{id}")]
         public IHttpActionResult DeleteBagcart([FromUri] int id)
         {
             // NO JSON NEEDED.
@@ -37,9 +37,9 @@ namespace TABAS_API.Controllers
         /// <summary>
         /// Elimina un color de la base de datos.
         /// </summary>
-        /// <param name="model">El modelo a eliminar.</param>
+        /// <param name="color">El modelo a eliminar.</param>
         /// <returns>El resultado de la acción.</returns>
-        [HttpDelete, Route("tabas/delete/colors/{color}")]
+        [HttpPost, Route("tabas/delete/colors/{color}")]
         public IHttpActionResult DeleteColor([FromUri] string color)
         {
             // NO JSON NEEDED.
@@ -51,7 +51,7 @@ namespace TABAS_API.Controllers
         /// </summary>
         /// <param name="flight">El id del vuelo.</param>
         /// <returns>El resultado de la acción.</returns>
-        [HttpDelete, Route("tabas/delete/flights/{flight}")]
+        [HttpPost, Route("tabas/delete/flights/{flight}")]
         public IHttpActionResult DeleteColor([FromUri] int flight)
         {
             // NO JSON NEEDED.
@@ -63,7 +63,7 @@ namespace TABAS_API.Controllers
         /// </summary>
         /// <param name="role">El nombre del rol.</param>
         /// <returns>El resultado de la acción.</returns>
-        [HttpDelete, Route("tabas/delete/roles/{role}")]
+        [HttpPost, Route("tabas/delete/roles/{role}")]
         public IHttpActionResult DeleterRole([FromUri] string role)
         {
             // NO JSON NEEDED.
